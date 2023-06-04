@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -57,7 +58,7 @@ fun SavedBookScreen(navController: NavHostController) {
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 51.dp),
-            text = "Favorite books",
+            text = "Saved books",
             style = TextStyle(
                 fontSize = 24.sp,
                 fontWeight = FontWeight(600),
@@ -166,8 +167,8 @@ fun BookItem(
                     .width(30.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.LibraryBooks,
-                    contentDescription = "Library book icon",
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete book icon",
                     modifier = Modifier
                         .fillMaxSize()
                         .graphicsLayer(alpha = 0.99f)

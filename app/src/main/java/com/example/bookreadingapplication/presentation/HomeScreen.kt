@@ -140,23 +140,34 @@ fun HomeScreen(navController: NavHostController) {
             }
         }
 
-        Row(
+        Text(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .padding(start = 16.dp, top = 16.dp),
+            text = "Recommended for you",
+            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        )
+
+        LazyRow(
+            modifier = Modifier.padding(16.dp, top = 0.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Recommended for you",
-                style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            )
-            Icon(
-                modifier = Modifier.clickable { /* Handle arrow icon click */ },
-                imageVector = Icons.Default.ArrowForwardIos,
-                contentDescription = "Arrow Icon"
-            )
+            items(recommendedBooks) { book ->
+                Box(
+                    modifier = Modifier.clickable {
+                        navController.navigate(Graph.DETAIL)
+                    }
+                ) {
+                    BookItem(book)
+                }
+            }
         }
+
+        Text(
+            modifier = Modifier
+                .padding(start = 16.dp, top = 16.dp),
+            text = "Recently viewed",
+            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        )
 
         LazyRow(
             modifier = Modifier.padding(16.dp, top = 0.dp),

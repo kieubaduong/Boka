@@ -49,7 +49,7 @@ fun HistoryScreen(navController: NavHostController) {
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 30.dp),
-            text = "Books viewed",
+            text = "Rated books",
             style = TextStyle(
                 fontSize = 24.sp,
                 fontWeight = FontWeight(600),

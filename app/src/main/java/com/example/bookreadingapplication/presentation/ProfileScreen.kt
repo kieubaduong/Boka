@@ -102,15 +102,15 @@ fun ProfileScreen(navController: NavHostController) {
                 Box(modifier = Modifier.height(35.dp))
                 ProfileItem(
                     title = "Fullname",
-                    subtitle = "Suzanne Mildred Sweet",
+                    subtitle = "Kiều Bá Dương",
                 )
                 ProfileItem(
                     title = "Email",
-                    subtitle = "Suzanne Mildred Sweet",
+                    subtitle = "kieubaduong24@gmail.com",
                 )
                 ProfileItem(
                     title = "Bird date",
-                    subtitle = "not update",
+                    subtitle = "24/12/2002",
                 )
                 ProfileItem(
                     title = "Gender",

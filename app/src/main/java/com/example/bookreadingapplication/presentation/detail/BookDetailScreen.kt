@@ -228,7 +228,7 @@ fun BookDetailScreen(navController: NavHostController) {
         }
         Text(
             modifier = Modifier.padding(top = 11.dp, start = 27.dp),
-            text = "People who viewed this also viewed",
+            text = "Books you might like",
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight(500),
