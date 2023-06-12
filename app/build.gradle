@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.bookreadingapplication'
+    namespace 'com.example.boka'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.bookreadingapplication"
+        applicationId "com.example.boka"
         minSdk 29
         targetSdk 33
         versionCode 1
