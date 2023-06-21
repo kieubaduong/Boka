@@ -1,10 +1,11 @@
 package com.example.boka.graph
 
+import NormalScreen
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.example.boka.presentation.auth.SignInScreen
+import com.example.boka.ui.auth.SignInScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController){
     navigation(

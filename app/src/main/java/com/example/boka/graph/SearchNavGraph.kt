@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.boka.presentation.SearchScreen
+import com.example.boka.ui.SearchScreen
 
 fun NavGraphBuilder.searchNavGraph(navController: NavHostController){
     navigation(

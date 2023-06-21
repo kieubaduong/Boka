@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.boka.presentation.HomeScreen
-import com.example.boka.presentation.ProfileScreen
-import com.example.boka.presentation.SavedBookScreen
-import com.example.boka.presentation.history.HistoryScreen
+import com.example.boka.ui.home.HomeScreen
+import com.example.boka.ui.ProfileScreen
+import com.example.boka.ui.SavedBookScreen
+import com.example.boka.ui.history.HistoryScreen
 
 @Composable
 fun BaseNavGraph(navController: NavHostController){

@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.boka.graph.RootNavGraph
-import com.example.boka.presentation.detail.BookDetailScreen
-import com.example.boka.theme.BookReadingApplicationTheme
+import com.example.boka.ui.detail.BookDetailScreen
+import com.example.boka.ui.theme.BookReadingApplicationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
