@@ -3,11 +3,11 @@ package com.example.boka.domain.entity
 import java.time.LocalDateTime
 
 data class UserEntity(
-    val name: String,
-    val email: String,
+    val name: String? = "",
+    val email: String? = "",
     val genres: List<String> = emptyList(),
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val createdAt: LocalDateTime? = LocalDateTime.MIN,
+    val updatedAt: LocalDateTime? = LocalDateTime.MIN,
 ){
     companion object {
         val NULL = UserEntity(

@@ -7,7 +7,7 @@ data class BookEntity(
     val author : String = "",
     val yearOfPublication : Int = 0,
     val publisher : String = "",
-    val rating : Int,
+    val rating : Double,
     val category: String,
     val tags : List<String> = emptyList(),
     val imageS : String = "",

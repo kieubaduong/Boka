@@ -39,9 +39,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.boka.R
-import com.example.boka.ui.common.RatingBar
 import com.example.boka.domain.entity.BookEntity
+import com.example.boka.ui.common.RatingBar
 import com.example.boka.ui.theme.AppColor
+import com.example.boka.util.roundNumber
 
 @Composable
 fun SavedBookScreen(navController: NavHostController) {
@@ -101,7 +102,7 @@ fun SavedBookScreen(navController: NavHostController) {
 @Composable
 fun BookItem(
     bookName: String,
-    rating: Int,
+    rating: Double,
     category: String,
 ) {
     val gradient = Brush.horizontalGradient(
@@ -151,7 +152,7 @@ fun BookItem(
                         color = Color(0xFF393C50)
                     )
                 )
-                RatingBar(rating = rating, 18)
+                RatingBar(rating = roundNumber(rating), 18)
                 Text(
                     text = category,
                     style = TextStyle(
@@ -185,9 +186,9 @@ fun BookItem(
 }
 
 val bookEntities = listOf(
-    BookEntity(title = "Enter Prise Design Sprints", rating =  3, category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints",rating =  3,category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints", rating = 3,category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints", rating = 3,category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints", rating = 3,category =  "Northwestern"),
+    BookEntity(title = "Enter Prise Design Sprints", rating =  3.0, category =  "Northwestern"),
+    BookEntity(title ="Enter Prise Design Sprints",rating =  3.0,category =  "Northwestern"),
+    BookEntity(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
+    BookEntity(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
+    BookEntity(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
 )

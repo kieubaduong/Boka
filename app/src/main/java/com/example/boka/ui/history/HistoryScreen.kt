@@ -1,6 +1,7 @@
 package com.example.boka.ui.history
 
 
+import NormalScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,9 +31,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.boka.R
-import com.example.boka.ui.common.RatingBar
 import com.example.boka.core.loremIpsum
 import com.example.boka.domain.entity.BookEntity
+import com.example.boka.ui.common.RatingBar
+import com.example.boka.util.roundNumber
 
 @Composable
 fun HistoryScreen(navController: NavHostController) {
@@ -66,9 +68,9 @@ fun HistoryScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(36.dp)
         ) {
             bookEntities.forEach { book ->
-                book.title?.let {
-                    book.rating?.let { it1 ->
-                        book.category?.let { it2 ->
+                book.title.let {
+                    book.rating.let { it1 ->
+                        book.category.let { it2 ->
                             Box (
                                 modifier = Modifier
                                     .clickable {
@@ -92,7 +94,7 @@ fun HistoryScreen(navController: NavHostController) {
 @Composable
 fun BookItem(
     bookName: String,
-    rating: Int,
+    rating: Double,
     category: String,
 ) {
     val gradient = Brush.horizontalGradient(
@@ -155,16 +157,16 @@ fun BookItem(
                         color = Color(0xFF999999)
                     )
                 )
-                RatingBar(rating = rating, 18)
+                RatingBar(rating = roundNumber(rating), 18)
             }
         }
     }
 }
 
 val bookEntities = listOf(
-    BookEntity(title = "Enter Prise Design Sprints", rating =  3, category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints",rating =  3,category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints", rating = 3,category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints", rating = 3,category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints", rating = 3,category =  "Northwestern"),
+    BookEntity(title = "Enter Prise Design Sprints", rating =  3.0, category =  "Northwestern"),
+    BookEntity(title ="Enter Prise Design Sprints",rating =  3.0,category =  "Northwestern"),
+    BookEntity(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
+    BookEntity(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
+    BookEntity(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
 )

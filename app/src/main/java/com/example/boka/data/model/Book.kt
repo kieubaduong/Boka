@@ -19,7 +19,7 @@ data class Book(
     @SerializedName("image_l")
     val imageL : String,
     val tags : List<String>,
-    val rating : Int,
+    val rating : Double,
     @SerializedName("review_count")
     val reviewCount : Int,
     val genres : List<Genre>,

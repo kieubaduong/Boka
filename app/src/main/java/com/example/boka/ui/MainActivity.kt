@@ -1,4 +1,4 @@
-package com.example.boka
+package com.example.boka.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
