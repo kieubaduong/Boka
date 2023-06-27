@@ -1,5 +1,6 @@
 package com.example.boka.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,7 +31,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +50,7 @@ import androidx.navigation.NavHostController
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.example.boka.R
 import com.example.boka.core.userAgent
 import com.example.boka.data.data_source.network.ApiService
@@ -58,6 +62,7 @@ import com.example.boka.ui.theme.AppColor
 import com.example.boka.util.ApiResult
 import com.example.boka.util.gradientBackground
 import com.example.boka.util.initUntrustedImageLoader
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -226,23 +231,46 @@ fun BookItem(bookEntity: BookEntity) {
             crossfade(true)
             placeholder(R.drawable.book)
         }).build()
+    var imageSize = remember { mutableStateOf(Pair(0, 0)) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    coroutineScope.launch {
+        val result = untrustedImageLoader.execute(request)
+        if (result is SuccessResult) {
+            imageSize.value = result.drawable.intrinsicWidth to result.drawable.intrinsicHeight
+            Log.d("ImageSize", "Image size: $imageSize")
+        }
+    }
 
     Column(
         modifier = Modifier.width(120.dp)
     ) {
         Box {
-            Image(
-                painter = rememberAsyncImagePainter(
-                    model = request,
-                    imageLoader = untrustedImageLoader
-                ),
-                contentDescription = bookEntity.title,
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(176.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop,
-            )
+            if (imageSize.value == Pair(1, 1)) {
+                Image(
+                    painter = painterResource(R.drawable.book),
+                    contentDescription = bookEntity.title,
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(176.dp)
+                        .clip(RoundedCornerShape(16.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter = rememberAsyncImagePainter(
+                        model = request,
+                        imageLoader = untrustedImageLoader
+                    ),
+                    contentDescription = bookEntity.title,
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(176.dp)
+                        .clip(RoundedCornerShape(16.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
