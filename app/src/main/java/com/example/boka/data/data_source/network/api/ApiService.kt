@@ -1,7 +1,5 @@
-package com.example.boka.data.data_source.network
+package com.example.boka.data.data_source.network.api
 
-import com.example.boka.data.data_source.network.auth.AuthService
-import com.example.boka.data.data_source.network.book.BookService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -17,11 +15,11 @@ object ApiService {
         }
 
     private var retrofit: Retrofit? = null
-    val authService: AuthService by lazy {
+    val authApi: AuthApi by lazy {
         if (retrofit == null) {
             buildRetrofit()
         }
-        retrofit!!.create(AuthService::class.java)
+        retrofit!!.create(AuthApi::class.java)
     }
     val bookService : BookService by lazy {
         if (retrofit == null) {

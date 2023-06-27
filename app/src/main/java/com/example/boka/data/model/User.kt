@@ -1,16 +1,18 @@
-package com.example.boka.domain.entity
+package com.example.boka.data.model
 
 import java.time.LocalDateTime
 
-data class UserEntity(
+data class User(
     val name: String? = "",
     val email: String? = "",
     val genres: List<String> = emptyList(),
     val createdAt: LocalDateTime? = LocalDateTime.MIN,
     val updatedAt: LocalDateTime? = LocalDateTime.MIN,
+    val favoriteGenres : List<Int> = emptyList(),
+    var token : String? = null
 ){
     companion object {
-        val NULL = UserEntity(
+        val NULL = User(
             name = "",
             email = "",
             genres = emptyList(),

@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Category
@@ -29,6 +31,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +40,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -53,9 +57,9 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.example.boka.R
 import com.example.boka.core.userAgent
-import com.example.boka.data.data_source.network.ApiService
+import com.example.boka.data.data_source.network.api.ApiService
 import com.example.boka.data.repository.BookRepoImpl
-import com.example.boka.domain.entity.BookEntity
+import com.example.boka.data.model.Book
 import com.example.boka.domain.use_case.GetTopRatedBooksUserCase
 import com.example.boka.graph.Graph
 import com.example.boka.ui.theme.AppColor
@@ -100,7 +104,6 @@ fun HomeScreen(navController: NavHostController) {
                         //TODO
                     },
                     enabled = false,
-
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .background(
@@ -127,119 +130,135 @@ fun HomeScreen(navController: NavHostController) {
                         )
                     }
                 )
-                Box(Modifier.height(30.dp))
+
             }
         }
 
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Popular",
-                style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            )
-            Icon(
-                modifier = Modifier.clickable { /* Handle arrow icon click */ },
-                imageVector = Icons.Default.ArrowForwardIos,
-                contentDescription = "Arrow Icon"
-            )
-        }
+                .verticalScroll(rememberScrollState())
+                .weight(weight = 1f, fill = false)
+        )
+        {
+//            Box(Modifier.height(30.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Popular",
+                    style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                )
+                Icon(
+                    modifier = Modifier.clickable { /* Handle arrow icon click */ },
+                    imageVector = Icons.Default.ArrowForwardIos,
+                    contentDescription = "Arrow Icon"
+                )
+            }
 
-        when (topRatedBooksResult) {
-            is ApiResult.Success -> {
-                val topBooks = (topRatedBooksResult as ApiResult.Success<List<BookEntity>>).data
-                LazyRow(
-                    modifier = Modifier.padding(16.dp, top = 0.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(topBooks) { book ->
-                        Box(
-                            modifier = Modifier.clickable {
-                                navController.navigate(Graph.DETAIL)
+            when (topRatedBooksResult) {
+                is ApiResult.Success -> {
+                    val topBooks = (topRatedBooksResult as ApiResult.Success<List<Book>>).data
+                    LazyRow(
+                        modifier = Modifier.padding(16.dp, top = 0.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(topBooks) { book ->
+                            Box(
+                                modifier = Modifier.clickable {
+                                    navController.navigate(Graph.DETAIL)
+                                }
+                            ) {
+                                BookItem(book)
                             }
-                        ) {
-                            BookItem(book)
                         }
                     }
                 }
-            }
 
-            is ApiResult.Error -> {
-                Text(text = (topRatedBooksResult as ApiResult.Error).exception.message ?: "Error")
-            }
+                is ApiResult.Error -> {
+                    Text(
+                        text = (topRatedBooksResult as ApiResult.Error).exception.message ?: "Error"
+                    )
+                }
 
-            is ApiResult.Loading -> {
-                CircularProgressIndicator()
-            }
-        }
-        Text(
-            modifier = Modifier
-                .padding(start = 16.dp, top = 16.dp),
-            text = "Recommended for you",
-            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        )
-        LazyRow(
-            modifier = Modifier.padding(16.dp, top = 0.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(recommendedBookEntities) { book ->
-                Box(
-                    modifier = Modifier.clickable {
-                        navController.navigate(Graph.DETAIL)
-                    }
-                ) {
-                    BookItem(book)
+                is ApiResult.Loading -> {
+                    CircularProgressIndicator()
                 }
             }
-        }
 
-        Text(
-            modifier = Modifier
-                .padding(start = 16.dp, top = 16.dp),
-            text = "Recently viewed",
-            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        )
-
-        LazyRow(
-            modifier = Modifier.padding(16.dp, top = 0.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(recommendedBookEntities) { book ->
-                Box(
-                    modifier = Modifier.clickable {
-                        navController.navigate(Graph.DETAIL)
+            Text(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
+                text = "Recommended for you",
+                style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            )
+            LazyRow(
+                modifier = Modifier.padding(16.dp, top = 0.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(recommendedBookEntities) { book ->
+                    Box(
+                        modifier = Modifier.clickable {
+                            navController.navigate(Graph.DETAIL)
+                        }
+                    ) {
+                        BookItem(book)
                     }
-                ) {
-                    BookItem(book)
                 }
             }
+
+            Text(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
+                text = "Recently viewed",
+                style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            )
+
+            LazyRow(
+                modifier = Modifier.padding(16.dp, top = 0.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(recommendedBookEntities) { book ->
+                    Box(
+                        modifier = Modifier.clickable {
+                            navController.navigate(Graph.DETAIL)
+                        }
+                    ) {
+                        BookItem(book)
+                    }
+                }
+            }
+            Box(Modifier.height(30.dp))
         }
+
+
     }
 }
 
 @Composable
-fun BookItem(bookEntity: BookEntity) {
+fun BookItem(book: Book) {
     val untrustedImageLoader: ImageLoader = initUntrustedImageLoader(LocalContext.current)
     val request = ImageRequest.Builder(LocalContext.current)
-        .data(data = bookEntity.imageL)
+        .data(data = book.imageL)
         .setHeader("User-Agent", userAgent)
         .apply(block = fun ImageRequest.Builder.() {
             crossfade(true)
             placeholder(R.drawable.book)
         }).build()
-    var imageSize = remember { mutableStateOf(Pair(0, 0)) }
+    val imageSize = remember { mutableStateOf(Pair(0, 0)) }
 
     val coroutineScope = rememberCoroutineScope()
 
-    coroutineScope.launch {
-        val result = untrustedImageLoader.execute(request)
-        if (result is SuccessResult) {
-            imageSize.value = result.drawable.intrinsicWidth to result.drawable.intrinsicHeight
-            Log.d("ImageSize", "Image size: $imageSize")
+    LaunchedEffect(key1 = Unit) {
+        coroutineScope.launch {
+            val result = untrustedImageLoader.execute(request)
+            if (result is SuccessResult) {
+                imageSize.value = result.drawable.intrinsicWidth to result.drawable.intrinsicHeight
+                Log.d("ImageSize", "Image size: $imageSize")
+            }
         }
     }
 
@@ -250,11 +269,16 @@ fun BookItem(bookEntity: BookEntity) {
             if (imageSize.value == Pair(1, 1)) {
                 Image(
                     painter = painterResource(R.drawable.book),
-                    contentDescription = bookEntity.title,
+                    contentDescription = book.title,
                     modifier = Modifier
                         .width(120.dp)
                         .height(176.dp)
-                        .clip(RoundedCornerShape(16.dp)),
+                        .clip(RoundedCornerShape(16.dp))
+                        .shadow(
+                            elevation = 5.dp,
+                            spotColor = Color(0x63000000),
+                            ambientColor = Color(0x63000000)
+                        ),
                     contentScale = ContentScale.Crop
                 )
             } else {
@@ -263,7 +287,7 @@ fun BookItem(bookEntity: BookEntity) {
                         model = request,
                         imageLoader = untrustedImageLoader
                     ),
-                    contentDescription = bookEntity.title,
+                    contentDescription = book.title,
                     modifier = Modifier
                         .width(120.dp)
                         .height(176.dp)
@@ -299,14 +323,14 @@ fun BookItem(bookEntity: BookEntity) {
                             .size(14.dp)
                     )
                     Text(
-                        text = bookEntity.rating.toString(),
+                        text = book.rating.toString(),
                         style = TextStyle(fontSize = 12.sp, color = Color.White),
                     )
                 }
             }
         }
         Text(
-            text = bookEntity.title,
+            text = book.title,
             style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(top = 8.dp),
             maxLines = 2,
@@ -322,7 +346,7 @@ fun BookItem(bookEntity: BookEntity) {
                 modifier = Modifier.size(16.dp)
             )
             Text(
-                text = bookEntity.category,
+                text = book.category,
                 style = TextStyle(fontSize = 16.sp, color = AppColor.grey),
                 modifier = Modifier.padding(start = 4.dp),
                 maxLines = 1,
@@ -332,9 +356,34 @@ fun BookItem(bookEntity: BookEntity) {
 }
 
 val recommendedBookEntities = listOf(
-    BookEntity(title = "Book 6", rating = 4.0, category = "horror, zombies,...", imageL = "https://link.gdsc.app/4JVfQai"),
-    BookEntity(title = "Book 7", rating = 4.0, category = "horror, zombies,...", imageL = "https://link.gdsc.app/4JVfQai"),
-    BookEntity(title = "Book 8", rating = 3.0, category = "horror, zombies,...", imageL = "https://link.gdsc.app/4JVfQai"),
-    BookEntity(title = "Book 9", rating = 3.0, category = "horror, zombies,...", imageL = "https://link.gdsc.app/4JVfQai"),
-    BookEntity(title = "Book 10", rating = 3.0, category = "horror, zombies,...", imageL = "https://link.gdsc.app/4JVfQai"),
+    Book(
+        title = "Book 6",
+        rating = 4.0,
+        category = "horror, zombies,...",
+        imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
+    ),
+    Book(
+        title = "Book 7",
+        rating = 4.0,
+        category = "horror, zombies,...",
+        imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
+    ),
+    Book(
+        title = "Book 8",
+        rating = 3.0,
+        category = "horror, zombies,...",
+        imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
+    ),
+    Book(
+        title = "Book 9",
+        rating = 3.0,
+        category = "horror, zombies,...",
+        imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
+    ),
+    Book(
+        title = "Book 10",
+        rating = 3.0,
+        category = "horror, zombies,...",
+        imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
+    ),
 )

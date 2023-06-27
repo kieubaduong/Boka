@@ -4,18 +4,15 @@ import com.example.boka.data.data_source.network.auth.AuthService
 import com.example.boka.data.data_source.network.auth.body.SignInBody
 import com.example.boka.data.data_source.network.auth.result.SignInResult
 import com.example.boka.data.model.NetworkResult
-import com.example.boka.domain.entity.UserEntity
-import com.example.boka.domain.mapper.UserMapper
+import com.example.boka.data.model.User
 
 class AuthRepoImpl(private val authService: AuthService) {
-    suspend fun signIn(signInBody: SignInBody): NetworkResult<UserEntity> {
+    suspend fun signIn(signInBody: SignInBody): NetworkResult<User> {
         val res: NetworkResult<SignInResult> = authService.signIn(signInBody)
         return try {
             res.data?.let {
                 return NetworkResult(
-                    data = UserMapper.mapToEntity(it),
-                    message = res.message,
-                    token = res.token,
+                    data = it.data?.toUser(),
                     error = res.error
                 )
             }

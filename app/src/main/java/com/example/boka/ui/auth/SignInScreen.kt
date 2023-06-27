@@ -45,9 +45,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.boka.data.data_source.network.ApiService
+import com.example.boka.data.data_source.network.api.ApiService
+import com.example.boka.data.data_source.network.auth.AuthService
 import com.example.boka.data.repository.AuthRepoImpl
-import com.example.boka.domain.use_case.SignInUseCase
 import com.example.boka.graph.Graph
 import com.example.boka.ui.theme.AppColor
 import com.example.boka.util.ApiResult
@@ -57,10 +57,10 @@ import com.example.boka.util.gradientBackground
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignInScreen(navController: NavHostController) {
-    val authService = ApiService.authService
+    val authApi = ApiService.authApi
+    val authService = AuthService(authApi)
     val authRepo = AuthRepoImpl(authService)
-    val signInUseCase = SignInUseCase(authRepo)
-    val signInViewModel = SignInViewModel(signInUseCase)
+    val signInViewModel = SignInViewModel(authRepo)
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

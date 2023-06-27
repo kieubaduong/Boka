@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.boka.R
-import com.example.boka.domain.entity.BookEntity
+import com.example.boka.data.model.Book
 import com.example.boka.ui.common.RatingBar
 import com.example.boka.ui.theme.AppColor
 import com.example.boka.util.roundNumber
@@ -186,9 +186,9 @@ fun BookItem(
 }
 
 val bookEntities = listOf(
-    BookEntity(title = "Enter Prise Design Sprints", rating =  3.0, category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints",rating =  3.0,category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
-    BookEntity(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
+    Book(title = "Enter Prise Design Sprints", rating =  3.0, category =  "Northwestern"),
+    Book(title ="Enter Prise Design Sprints",rating =  3.0,category =  "Northwestern"),
+    Book(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
+    Book(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
+    Book(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
 )

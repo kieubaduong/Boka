@@ -1,7 +1,7 @@
 package com.example.boka.core
 
-import com.example.boka.domain.entity.UserEntity
+import com.example.boka.data.model.User
 
 object GlobalData {
-    lateinit var currentUser: UserEntity
+    lateinit var currentUser: User
 }

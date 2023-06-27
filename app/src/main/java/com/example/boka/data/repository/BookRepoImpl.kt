@@ -1,20 +1,18 @@
 package com.example.boka.data.repository
 
-import com.example.boka.data.data_source.network.book.BookService
+import com.example.boka.data.data_source.network.api.BookService
+import com.example.boka.data.data_source.network.book.result.BookJson
 import com.example.boka.data.model.Book
 import com.example.boka.data.model.NetworkResult
-import com.example.boka.domain.entity.BookEntity
-import com.example.boka.domain.mapper.BookMapper
 
 class BookRepoImpl(private val bookService: BookService) {
-    suspend fun getTopRatedBooks(): NetworkResult<List<BookEntity>> {
-        val res: NetworkResult<List<Book>> = bookService.getTopRatedBooks()
+    suspend fun getTopRatedBooks(): NetworkResult<List<Book>> {
+        val res: NetworkResult<List<BookJson>> = bookService.getTopRatedBooks()
         return try {
             res.data?.let { topRatedBooks ->
-                topRatedBooks.map { BookMapper.mapToEntity(it) }.apply {
+                topRatedBooks.map { it.toBook() }.apply {
                     return NetworkResult(
                         data = this,
-                        message = res.message,
                     )
                 }
 

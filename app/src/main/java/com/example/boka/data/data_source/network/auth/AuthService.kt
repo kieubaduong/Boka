@@ -1,15 +1,13 @@
 package com.example.boka.data.data_source.network.auth
 
+import com.example.boka.core.BaseService
+import com.example.boka.data.data_source.network.api.AuthApi
 import com.example.boka.data.data_source.network.auth.body.SignInBody
 import com.example.boka.data.data_source.network.auth.result.SignInResult
 import com.example.boka.data.model.NetworkResult
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
 
-interface AuthService {
-    @GET("auth")
-    suspend fun getAuth() : NetworkResult<SignInResult>
-    @POST("auth/sign_in")
-    suspend fun signIn(@Body request: SignInBody) : NetworkResult<SignInResult>
+class AuthService(private val authApi: AuthApi) : BaseService(){
+    suspend fun signIn(signInBody: SignInBody) : NetworkResult<SignInResult> {
+        return callApi { authApi.signIn(signInBody) }
+    }
 }
