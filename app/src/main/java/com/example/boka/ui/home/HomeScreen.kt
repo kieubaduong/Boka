@@ -1,7 +1,5 @@
 package com.example.boka.ui.home
 
-import android.graphics.drawable.Drawable
-import android.widget.ImageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,10 +28,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,16 +43,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import coil.ImageLoader
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.example.boka.R
+import com.example.boka.core.userAgent
 import com.example.boka.data.data_source.network.ApiService
 import com.example.boka.data.repository.BookRepoImpl
 import com.example.boka.domain.entity.BookEntity
@@ -65,7 +57,7 @@ import com.example.boka.graph.Graph
 import com.example.boka.ui.theme.AppColor
 import com.example.boka.util.ApiResult
 import com.example.boka.util.gradientBackground
-import initUntrustedImageLoader
+import com.example.boka.util.initUntrustedImageLoader
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -179,16 +171,12 @@ fun HomeScreen(navController: NavHostController) {
                 CircularProgressIndicator()
             }
         }
-
-
-
         Text(
             modifier = Modifier
                 .padding(start = 16.dp, top = 16.dp),
             text = "Recommended for you",
             style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
         )
-
         LazyRow(
             modifier = Modifier.padding(16.dp, top = 0.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -228,13 +216,12 @@ fun HomeScreen(navController: NavHostController) {
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun BookItem(bookEntity: BookEntity) {
     val untrustedImageLoader: ImageLoader = initUntrustedImageLoader(LocalContext.current)
     val request = ImageRequest.Builder(LocalContext.current)
-        .data(data = "http://images.amazon.com/images/P/0060093269.01.LZZZZZZZ.jpg")
-        .setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.58")
+        .data(data = bookEntity.imageL)
+        .setHeader("User-Agent", userAgent)
         .apply(block = fun ImageRequest.Builder.() {
             crossfade(true)
             placeholder(R.drawable.book)
@@ -250,23 +237,12 @@ fun BookItem(bookEntity: BookEntity) {
                     imageLoader = untrustedImageLoader
                 ),
                 contentDescription = bookEntity.title,
-                modifier = Modifier.size(100.dp)
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(176.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Crop,
             )
-//            GlideImage(url = "https://vapa.vn/wp-content/uploads/2022/12/anh-3d-thien-nhien.jpeg")
-//            AsyncImage(
-//                model = rememberAsyncImagePainter(
-//                    model = request,
-//                    imageLoader = untrustedImageLoader
-//                ),
-//                placeholder = painterResource(R.drawable.book),
-//
-//                contentDescription = bookEntity.title,
-//                modifier = Modifier
-//                    .width(120.dp)
-//                    .height(176.dp)
-//                    .clip(RoundedCornerShape(16.dp)),
-//                contentScale = ContentScale.Crop,
-//            )
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -327,42 +303,10 @@ fun BookItem(bookEntity: BookEntity) {
     }
 }
 
-@Composable
-fun GlideImage(url: String) {
-    val imageLoaded: MutableState<Boolean> = remember { mutableStateOf(false) }
-
-    AndroidView(
-        factory = { context ->
-            ImageView(context).apply {
-                if (!imageLoaded.value) {
-                    Glide.with(context)
-                        .load(url)
-                        .into(
-                            object : CustomTarget<Drawable>() {
-                                override fun onResourceReady(
-                                    resource: Drawable,
-                                    transition: Transition<in Drawable>?,
-                                ) {
-                                    setImageDrawable(resource)
-                                    imageLoaded.value = true
-                                }
-
-                                override fun onLoadCleared(placeholder: Drawable?) {
-                                    // Do nothing
-                                }
-                            },
-                        )
-                }
-            }
-        },
-        modifier = Modifier.size(100.dp)
-    )
-}
-
 val recommendedBookEntities = listOf(
-    BookEntity(title = "Book 6", rating = 4.0, category = "horror, zombies,..."),
-    BookEntity(title = "Book 7", rating = 4.0, category = "horror, zombies,..."),
-    BookEntity(title = "Book 8", rating = 3.0, category = "horror, zombies,..."),
-    BookEntity(title = "Book 9", rating = 3.0, category = "horror, zombies,..."),
-    BookEntity(title = "Book 10", rating = 3.0, category = "horror, zombies,..."),
+    BookEntity(title = "Book 6", rating = 4.0, category = "horror, zombies,...", imageL = "https://link.gdsc.app/4JVfQai"),
+    BookEntity(title = "Book 7", rating = 4.0, category = "horror, zombies,...", imageL = "https://link.gdsc.app/4JVfQai"),
+    BookEntity(title = "Book 8", rating = 3.0, category = "horror, zombies,...", imageL = "https://link.gdsc.app/4JVfQai"),
+    BookEntity(title = "Book 9", rating = 3.0, category = "horror, zombies,...", imageL = "https://link.gdsc.app/4JVfQai"),
+    BookEntity(title = "Book 10", rating = 3.0, category = "horror, zombies,...", imageL = "https://link.gdsc.app/4JVfQai"),
 )

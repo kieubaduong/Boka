@@ -1,4 +1,4 @@
-
+package com.example.boka.util
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
@@ -35,7 +35,7 @@ fun initUntrustedImageLoader(context: Context): ImageLoader {
     val sslSocketFactory = sslContext.socketFactory
 
     val logging = HttpLoggingInterceptor { message -> Log.d("OkHttp", message) }
-    logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+    logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
     val client = OkHttpClient.Builder()
         .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
         .addInterceptor(logging)
