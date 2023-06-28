@@ -31,7 +31,7 @@ class HomeViewModel(private val bookRepo: BookRepo) : ViewModel() {
                     _topRatedBooks.value = ApiResult.Error(Exception(res.error))
                 }
             } catch (e: Exception) {
-                _topRatedBooks.value = ApiResult.Error(e)
+                _topRatedBooks.value = ApiResult.Error(Exception("ViewModel layer: ${e.message}"))
             }
         }
     }

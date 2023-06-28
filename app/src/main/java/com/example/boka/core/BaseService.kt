@@ -9,7 +9,7 @@ open class BaseService {
         return if (response.isSuccessful) {
             NetworkResult(data = response.body())
         } else {
-            NetworkResult(error = response.message())
+            NetworkResult(error = "Service layer: ${response.code()} ${response.message()}")
         }
     }
 }
