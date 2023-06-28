@@ -1,7 +1,7 @@
 package com.example.boka.ui.history
 
 
-import NormalScreen
+import com.example.boka.core.NormalScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

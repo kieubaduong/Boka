@@ -1,3 +1,5 @@
+package com.example.boka.core
+
 import com.example.boka.R
 
 sealed class BottomBarScreen(val route: String, val icon: Int) {

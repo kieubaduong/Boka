@@ -1,6 +1,6 @@
 package com.example.boka.graph
 
-import NormalScreen
+import com.example.boka.core.NormalScreen
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable

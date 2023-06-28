@@ -1,4 +1,4 @@
-
+package com.example.boka.core
 sealed class NormalScreen(val route: String) {
     object BookDetail : NormalScreen("book_detail")
     object Search: NormalScreen("search")

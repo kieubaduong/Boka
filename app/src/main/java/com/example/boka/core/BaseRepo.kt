@@ -2,11 +2,12 @@ package com.example.boka.core
 
 import com.example.boka.data.model.NetworkResult
 
-open class BaseRepo{
+open class BaseRepo {
     fun <T : Any, R : Any> handleNetworkResult(
         result: NetworkResult<T>,
-        transform: (T) -> R
+        transform: (T) -> R,
     ): NetworkResult<R> {
+        result.data
         return try {
             result.data?.let {
                 NetworkResult(data = transform(it))

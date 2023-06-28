@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.boka.core.BottomBarScreen
 import com.example.boka.ui.home.HomeScreen
 import com.example.boka.ui.ProfileScreen
 import com.example.boka.ui.SavedBookScreen

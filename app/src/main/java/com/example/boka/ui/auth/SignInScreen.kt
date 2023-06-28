@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,6 +46,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.boka.core.dataStore
 import com.example.boka.data.data_source.network.api.ApiService
 import com.example.boka.data.data_source.network.auth.AuthService
 import com.example.boka.data.repository.AuthRepo
@@ -60,7 +62,7 @@ fun SignInScreen(navController: NavHostController) {
     val authApi = ApiService.authApi
     val authService = AuthService(authApi)
     val authRepo = AuthRepo(authService)
-    val signInViewModel = SignInViewModel(authRepo)
+    val signInViewModel = SignInViewModel(authRepo, LocalContext.current.dataStore)
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

@@ -1,8 +1,12 @@
 package com.example.boka.ui.auth
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.boka.core.GlobalData
+import com.example.boka.core.PreferencesKeys
 import com.example.boka.data.data_source.network.api.ApiService
 import com.example.boka.data.data_source.network.auth.body.SignInBody
 import com.example.boka.data.model.User
@@ -12,7 +16,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class SignInViewModel(private val authRepoImpl: AuthRepo) : ViewModel() {
+class SignInViewModel(
+    private val authRepoImpl: AuthRepo,
+    private val dataStore: DataStore<Preferences>,
+) : ViewModel() {
 
     private val _signInResult = MutableStateFlow<ApiResult<User>>(ApiResult.Loading)
     val signInResult: StateFlow<ApiResult<User>> get() = _signInResult
@@ -27,6 +34,11 @@ class SignInViewModel(private val authRepoImpl: AuthRepo) : ViewModel() {
                     _signInResult.value = ApiResult.Success(user ?: User.NULL)
                     ApiService.token = response.data?.token ?: "Null token"
                     GlobalData.currentUser = user ?: User.NULL
+                    response.data?.token?.let { token ->
+                        dataStore.edit {
+                            it[PreferencesKeys.TOKEN] = token
+                        }
+                    }
                 } else {
                     val errorBody = response.error
                     _signInResult.value = ApiResult.Error(Exception(errorBody))

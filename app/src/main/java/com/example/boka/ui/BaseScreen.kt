@@ -1,6 +1,6 @@
 package com.example.boka.ui
 
-import BottomBarScreen
+import com.example.boka.core.BottomBarScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
