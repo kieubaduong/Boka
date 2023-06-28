@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.boka.data.data_source.network.api.ApiService
 import com.example.boka.data.data_source.network.auth.AuthService
-import com.example.boka.data.repository.AuthRepoImpl
+import com.example.boka.data.repository.AuthRepo
 import com.example.boka.graph.Graph
 import com.example.boka.ui.theme.AppColor
 import com.example.boka.util.ApiResult
@@ -59,7 +59,7 @@ import com.example.boka.util.gradientBackground
 fun SignInScreen(navController: NavHostController) {
     val authApi = ApiService.authApi
     val authService = AuthService(authApi)
-    val authRepo = AuthRepoImpl(authService)
+    val authRepo = AuthRepo(authService)
     val signInViewModel = SignInViewModel(authRepo)
 
     var email by remember { mutableStateOf("") }

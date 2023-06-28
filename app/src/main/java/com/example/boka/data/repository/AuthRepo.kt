@@ -6,13 +6,13 @@ import com.example.boka.data.data_source.network.auth.result.SignInResult
 import com.example.boka.data.model.NetworkResult
 import com.example.boka.data.model.User
 
-class AuthRepoImpl(private val authService: AuthService) {
+class AuthRepo(private val authService: AuthService) {
     suspend fun signIn(signInBody: SignInBody): NetworkResult<User> {
         val res: NetworkResult<SignInResult> = authService.signIn(signInBody)
         return try {
             res.data?.let {
                 return NetworkResult(
-                    data = it.data?.toUser(),
+                    data = it.toUser(),
                     error = res.error
                 )
             }

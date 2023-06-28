@@ -4,13 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.boka.data.model.Book
-import com.example.boka.domain.use_case.GetTopRatedBooksUserCase
+import com.example.boka.data.repository.BookRepo
 import com.example.boka.util.ApiResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val getTopRatedBooksUserCase: GetTopRatedBooksUserCase) : ViewModel() {
+class HomeViewModel(private val bookRepo: BookRepo) : ViewModel() {
 
     private val _topRatedBooks = MutableStateFlow<ApiResult<List<Book>>>(ApiResult.Loading)
     val topRatedBooks: StateFlow<ApiResult<List<Book>>> get() = _topRatedBooks
@@ -23,7 +23,7 @@ class HomeViewModel(private val getTopRatedBooksUserCase: GetTopRatedBooksUserCa
     private fun getTopRatedBooks() {
         viewModelScope.launch {
             try{
-                val res = getTopRatedBooksUserCase()
+                val res = bookRepo.getTopRatedBooks()
                 if(res.data != null){
                     _topRatedBooks.value = ApiResult.Success(res.data)
                 }

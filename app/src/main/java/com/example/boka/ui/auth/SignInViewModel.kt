@@ -6,13 +6,13 @@ import com.example.boka.core.GlobalData
 import com.example.boka.data.data_source.network.api.ApiService
 import com.example.boka.data.data_source.network.auth.body.SignInBody
 import com.example.boka.data.model.User
-import com.example.boka.data.repository.AuthRepoImpl
+import com.example.boka.data.repository.AuthRepo
 import com.example.boka.util.ApiResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class SignInViewModel(private val authRepoImpl: AuthRepoImpl) : ViewModel() {
+class SignInViewModel(private val authRepoImpl: AuthRepo) : ViewModel() {
 
     private val _signInResult = MutableStateFlow<ApiResult<User>>(ApiResult.Loading)
     val signInResult: StateFlow<ApiResult<User>> get() = _signInResult

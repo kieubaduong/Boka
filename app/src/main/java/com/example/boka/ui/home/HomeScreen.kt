@@ -58,9 +58,9 @@ import coil.request.SuccessResult
 import com.example.boka.R
 import com.example.boka.core.userAgent
 import com.example.boka.data.data_source.network.api.ApiService
-import com.example.boka.data.repository.BookRepoImpl
+import com.example.boka.data.data_source.network.book.BookService
 import com.example.boka.data.model.Book
-import com.example.boka.domain.use_case.GetTopRatedBooksUserCase
+import com.example.boka.data.repository.BookRepo
 import com.example.boka.graph.Graph
 import com.example.boka.ui.theme.AppColor
 import com.example.boka.util.ApiResult
@@ -70,10 +70,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
-    val bookService = ApiService.bookService
-    val bookRepo = BookRepoImpl(bookService)
-    val getTopRatedBooksUseCase = GetTopRatedBooksUserCase(bookRepo)
-    val homeViewModel = remember { HomeViewModel(getTopRatedBooksUseCase) }
+    val bookApi = ApiService.bookApi
+    val bookService = BookService(bookApi)
+    val bookRepo = BookRepo(bookService)
+    val homeViewModel = remember { HomeViewModel(bookRepo) }
 
     val topRatedBooksResult by homeViewModel.topRatedBooks.collectAsState()
 

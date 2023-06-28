@@ -6,8 +6,8 @@ import com.example.boka.data.data_source.network.auth.body.SignInBody
 import com.example.boka.data.data_source.network.auth.result.SignInResult
 import com.example.boka.data.model.NetworkResult
 
-class AuthService(private val authApi: AuthApi) : BaseService(){
-    suspend fun signIn(signInBody: SignInBody) : NetworkResult<SignInResult> {
+class AuthService(private val authApi: AuthApi) : BaseService() {
+    suspend fun signIn(signInBody: SignInBody): NetworkResult<SignInResult> {
         return callApi { authApi.signIn(signInBody) }
     }
 }

@@ -21,11 +21,11 @@ object ApiService {
         }
         retrofit!!.create(AuthApi::class.java)
     }
-    val bookService : BookService by lazy {
+    val bookApi : BookApi by lazy {
         if (retrofit == null) {
             buildRetrofit()
         }
-        retrofit!!.create(BookService::class.java)
+        retrofit!!.create(BookApi::class.java)
     }
 
     private val tokenInterceptor = Interceptor { chain ->
