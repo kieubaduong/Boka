@@ -48,6 +48,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -180,12 +181,22 @@ fun HomeScreen(navController: NavHostController) {
 
                 is ApiResult.Error -> {
                     Text(
-                        text = (topRatedBooksResult as ApiResult.Error).exception.message ?: "Error"
+                        text = (topRatedBooksResult as ApiResult.Error).exception.message ?: "Error",
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                        style = TextStyle(color = Color.Red),
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
 
                 is ApiResult.Loading -> {
-                    CircularProgressIndicator()
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(vertical = 8.dp)
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
             }
 

@@ -22,15 +22,14 @@ import kotlinx.coroutines.flow.first
 
 @Composable
 fun RootNavGraph(navController: NavHostController){
-    val token: MutableState<String?> = remember { mutableStateOf(null) }
     val datastore = LocalContext.current.dataStore
     val user: MutableState<User?> = remember { mutableStateOf(null) }
-    val isTokenReady = rememberUpdatedState(token.value != null)
     val isUserNotNull = rememberUpdatedState(newValue = user.value != null)
+    val loading = rememberUpdatedState(newValue = user.value != null)
 
     LaunchedEffect(key1 = Unit){
-        token.value = datastore.data.first()[PreferencesKeys.TOKEN]
-        token.value?.let { ApiService.token = it }
+        val token = datastore.data.first()[PreferencesKeys.TOKEN]
+        token?.let { ApiService.token = it }
         val authApi = ApiService.authApi
         val authService = AuthService(authApi)
         val authRepo = AuthRepo(authService)
@@ -39,27 +38,31 @@ fun RootNavGraph(navController: NavHostController){
         user.value?.let{ GlobalData.currentUser = it }
     }
 
-    if (isTokenReady.value && isUserNotNull.value) {
-        NavHost(
-            navController = navController,
-            route = Graph.ROOT,
-            startDestination = Graph.BASE
-        ) {
-            authNavGraph(navController)
-            composable(route = Graph.BASE) {
-                BaseScreen()
+    if(loading.value){
+        if (isUserNotNull.value) {
+            NavHost(
+                navController = navController,
+                route = Graph.ROOT,
+                startDestination = Graph.BASE
+            ) {
+                authNavGraph(navController)
+                composable(route = Graph.BASE) {
+                    BaseScreen()
+                }
             }
-        }
-    } else {
-        NavHost(
-            navController = navController,
-            route = Graph.ROOT,
-            startDestination = Graph.AUTHENTICATION
-        ) {
-            authNavGraph(navController)
-            composable(route = Graph.BASE) {
-                BaseScreen()
+        } else {
+            NavHost(
+                navController = navController,
+                route = Graph.ROOT,
+                startDestination = Graph.AUTHENTICATION
+            ) {
+                authNavGraph(navController)
+                composable(route = Graph.BASE) {
+                    BaseScreen()
+                }
             }
         }
     }
+
+
 }
