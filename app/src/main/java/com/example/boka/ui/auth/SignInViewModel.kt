@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.boka.core.GlobalData
 import com.example.boka.core.PreferencesKeys
-import com.example.boka.data.data_source.network.api.ApiService
-import com.example.boka.data.data_source.network.auth.body.SignInBody
 import com.example.boka.data.model.User
+import com.example.boka.data.network.api.ApiService
+import com.example.boka.data.network.auth.body.SignInBody
 import com.example.boka.data.repository.AuthRepo
 import com.example.boka.util.ApiResult
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SignInViewModel(
-    private val authRepoImpl: AuthRepo,
+    private val authRepo: AuthRepo,
     private val dataStore: DataStore<Preferences>,
 ) : ViewModel() {
 
@@ -27,7 +27,7 @@ class SignInViewModel(
         viewModelScope.launch {
             _signInResult.value = ApiResult.Loading
             try {
-                val response = authRepoImpl.signIn(SignInBody(email, password))
+                val response = authRepo.signIn(SignInBody(email, password))
                 val user = response.data
                 val success = response.error == null && user != null
                 if (success) {

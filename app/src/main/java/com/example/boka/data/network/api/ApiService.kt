@@ -1,4 +1,4 @@
-package com.example.boka.data.data_source.network.api
+package com.example.boka.data.network.api
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

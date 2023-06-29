@@ -1,4 +1,4 @@
-package com.example.boka.data.data_source.network.auth.body
+package com.example.boka.data.network.auth.body
 
 data class SignInBody(
     val email: String,

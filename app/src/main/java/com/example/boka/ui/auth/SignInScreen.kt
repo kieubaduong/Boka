@@ -47,8 +47,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.boka.core.dataStore
-import com.example.boka.data.data_source.network.api.ApiService
-import com.example.boka.data.data_source.network.auth.AuthService
+import com.example.boka.data.network.api.ApiService
+import com.example.boka.data.network.auth.AuthService
 import com.example.boka.data.repository.AuthRepo
 import com.example.boka.graph.Graph
 import com.example.boka.ui.theme.AppColor

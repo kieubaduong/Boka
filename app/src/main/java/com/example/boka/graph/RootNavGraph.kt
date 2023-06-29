@@ -13,8 +13,8 @@ import androidx.navigation.compose.composable
 import com.example.boka.core.GlobalData
 import com.example.boka.core.PreferencesKeys
 import com.example.boka.core.dataStore
-import com.example.boka.data.data_source.network.api.ApiService
-import com.example.boka.data.data_source.network.auth.AuthService
+import com.example.boka.data.network.api.ApiService
+import com.example.boka.data.network.auth.AuthService
 import com.example.boka.data.model.User
 import com.example.boka.data.repository.AuthRepo
 import com.example.boka.ui.BaseScreen

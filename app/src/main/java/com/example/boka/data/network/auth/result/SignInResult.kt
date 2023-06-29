@@ -1,4 +1,4 @@
-package com.example.boka.data.data_source.network.auth.result
+package com.example.boka.data.network.auth.result
 
 import com.example.boka.core.BodyResult
 import com.example.boka.data.model.User

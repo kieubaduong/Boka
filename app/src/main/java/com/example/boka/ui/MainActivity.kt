@@ -26,6 +26,6 @@ class MainActivity : ComponentActivity() {
 fun DefaultPreview() {
     val navController = rememberNavController()
     BookReadingApplicationTheme {
-        BookDetailScreen(navController)
+        BookDetailScreen(navController, bookId = 0)
     }
 }

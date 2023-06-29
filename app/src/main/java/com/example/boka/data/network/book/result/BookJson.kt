@@ -1,4 +1,4 @@
-package com.example.boka.data.data_source.network.book.result
+package com.example.boka.data.network.book.result
 
 import com.example.boka.data.model.Book
 import com.example.boka.data.model.Genre
@@ -29,6 +29,7 @@ data class BookJson(
     fun toBook(): Book {
         val category = genres.joinToString { it.name }
         return Book(
+            id = id,
             isbn = isbn,
             title = title,
             description = description,

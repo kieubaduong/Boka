@@ -1,6 +1,7 @@
 package com.example.boka.data.model
 
 data class Book(
+    val id : Int = 0,
     val isbn : String = "",
     val title : String,
     val description : String = "",
@@ -13,4 +14,12 @@ data class Book(
     val imageS : String = "",
     val imageM : String = "",
     val imageL : String = "",
-)
+){
+    companion object{
+        val NULL = Book(
+            title = "",
+            rating = 0.0,
+            category = ""
+        )
+    }
+}

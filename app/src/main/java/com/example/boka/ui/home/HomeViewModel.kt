@@ -17,7 +17,6 @@ class HomeViewModel(private val bookRepo: BookRepo) : ViewModel() {
 
     init {
         getTopRatedBooks()
-        Log.d("Debug", "HomeVM: init")
     }
 
     private fun getTopRatedBooks() {

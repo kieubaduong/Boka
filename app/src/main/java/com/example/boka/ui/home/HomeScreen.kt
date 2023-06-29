@@ -1,6 +1,5 @@
 package com.example.boka.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,19 +30,15 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -52,22 +47,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.ImageLoader
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.example.boka.R
-import com.example.boka.core.userAgent
-import com.example.boka.data.data_source.network.api.ApiService
-import com.example.boka.data.data_source.network.book.BookService
+import com.example.boka.core.NormalScreen
 import com.example.boka.data.model.Book
+import com.example.boka.data.network.api.ApiService
+import com.example.boka.data.network.book.BookService
 import com.example.boka.data.repository.BookRepo
 import com.example.boka.graph.Graph
+import com.example.boka.ui.common.HttpImage
 import com.example.boka.ui.theme.AppColor
 import com.example.boka.util.ApiResult
 import com.example.boka.util.gradientBackground
-import com.example.boka.util.initUntrustedImageLoader
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -141,7 +131,6 @@ fun HomeScreen(navController: NavHostController) {
                 .weight(weight = 1f, fill = false)
         )
         {
-//            Box(Modifier.height(30.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -170,7 +159,7 @@ fun HomeScreen(navController: NavHostController) {
                         items(topBooks) { book ->
                             Box(
                                 modifier = Modifier.clickable {
-                                    navController.navigate(Graph.DETAIL)
+                                    navController.navigate("${NormalScreen.BookDetail.route}/${book.id}")
                                 }
                             ) {
                                 BookItem(book)
@@ -181,7 +170,8 @@ fun HomeScreen(navController: NavHostController) {
 
                 is ApiResult.Error -> {
                     Text(
-                        text = (topRatedBooksResult as ApiResult.Error).exception.message ?: "Error",
+                        text = (topRatedBooksResult as ApiResult.Error).exception.message
+                            ?: "Error",
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
                         style = TextStyle(color = Color.Red),
@@ -251,61 +241,21 @@ fun HomeScreen(navController: NavHostController) {
 
 @Composable
 fun BookItem(book: Book) {
-    val untrustedImageLoader: ImageLoader = initUntrustedImageLoader(LocalContext.current)
-    val request = ImageRequest.Builder(LocalContext.current)
-        .data(data = book.imageL)
-        .setHeader("User-Agent", userAgent)
-        .apply(block = fun ImageRequest.Builder.() {
-            crossfade(true)
-            placeholder(R.drawable.book)
-        }).build()
-    val imageSize = remember { mutableStateOf(Pair(0, 0)) }
-
-    val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(key1 = Unit) {
-        coroutineScope.launch {
-            val result = untrustedImageLoader.execute(request)
-            if (result is SuccessResult) {
-                imageSize.value = result.drawable.intrinsicWidth to result.drawable.intrinsicHeight
-                Log.d("ImageSize", "Image size: $imageSize")
-            }
-        }
-    }
-
     Column(
         modifier = Modifier.width(120.dp)
     ) {
         Box {
-            if (imageSize.value == Pair(1, 1)) {
-                Image(
-                    painter = painterResource(R.drawable.book),
-                    contentDescription = book.title,
-                    modifier = Modifier
-                        .width(120.dp)
-                        .height(176.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .shadow(
-                            elevation = 5.dp,
-                            spotColor = Color(0x63000000),
-                            ambientColor = Color(0x63000000)
-                        ),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        model = request,
-                        imageLoader = untrustedImageLoader
-                    ),
-                    contentDescription = book.title,
-                    modifier = Modifier
-                        .width(120.dp)
-                        .height(176.dp)
-                        .clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            HttpImage(
+                book.imageL, Modifier
+                    .width(120.dp)
+                    .height(176.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .shadow(
+                        elevation = 5.dp,
+                        spotColor = Color(0x63000000),
+                        ambientColor = Color(0x63000000)
+                    )
+            )
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)

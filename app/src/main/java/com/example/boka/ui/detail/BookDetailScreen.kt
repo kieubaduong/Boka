@@ -22,9 +22,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,210 +49,273 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.boka.R
 import com.example.boka.core.loremIpsum
+import com.example.boka.data.model.Book
+import com.example.boka.data.network.api.ApiService
+import com.example.boka.data.network.book.BookService
+import com.example.boka.data.repository.BookRepo
+import com.example.boka.ui.common.HttpImage
 import com.example.boka.ui.common.RatingBar
+import com.example.boka.util.ApiResult
 
 @Composable
-fun BookDetailScreen(navController: NavHostController) {
+fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
+    val bookService = BookService(ApiService.bookApi)
+    val bookRepo = BookRepo(bookService)
+    val bookViewModel = remember { BookDetailViewModel(bookRepo, bookId ?: 0) }
+
+    val getBookDetailResult by bookViewModel.getBookDetailResult.collectAsState()
+
     var rating by remember { mutableStateOf(0) }
     var isPopupVisible by remember { mutableStateOf(false) }
 
-
-    Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(bottom = 24.dp)
-    ) {
-        if (isPopupVisible) {
-            RatingPopup(
-                currentRating = rating,
-                onRatingSelected = { newRating ->
-                    rating = newRating
-                    isPopupVisible = false
-                }
-            )
-        }
-        Box(
-            modifier = Modifier
-                .height(474.dp)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            AsyncImage(
-                model = "https://link.gdsc.app/QL7oYJ2",
-                contentDescription = "Book background",
-                placeholder = painterResource(R.drawable.book),
-                modifier = Modifier
+    when (getBookDetailResult) {
+        is ApiResult.Loading -> {
+            Scaffold {
+                Box(modifier = Modifier
                     .fillMaxSize()
-                    .alpha(0.2f),
-                contentScale = ContentScale.Crop,
-            )
-            Box(
-                modifier = Modifier
-                    .padding(top = 72.dp, start = 34.dp)
-                    .align(Alignment.TopStart)
-                    .clickable {
-                        navController.popBackStack()
-                    }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBackIos,
-                    contentDescription = "Back Icon",
-                    tint = Color(0xFF666666),
-                    modifier = Modifier
-                        .size(23.dp)
-                )
-            }
-            Box(
-                modifier = Modifier.padding(top = 64.dp)
-            ) {
-                AsyncImage(
-                    model = "https://link.gdsc.app/QL7oYJ2",
-                    contentDescription = "Book background",
-                    placeholder = painterResource(R.drawable.book),
-                    modifier = Modifier
-                        .height(240.dp)
-                        .width(160.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop,
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .padding(top = 282.dp)
-                    .background(
-                        Color.Transparent
-                    )
-            ) {
-                Button(
-                    onClick = {
-                        isPopupVisible = true
-                    },
-                    modifier = Modifier
-                        .width(114.dp)
-                        .height(44.dp)
-                        .background(Color.Transparent),
-                    contentPadding = PaddingValues(0.dp),
-                ) {
+                    .padding(it)
+                ){
                     Box(
                         modifier = Modifier
-                            .background(
-                                brush = Brush.horizontalGradient(
-                                    colors = listOf(
-                                        Color(0xFFF953C6),
-                                        Color(0xFFB91D73),
-                                    ),
-                                ),
-                            )
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center,
+                            .align(Alignment.Center),
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ThumbUp,
-                                contentDescription = "Star Icon",
-                                tint = Color.White,
-                                modifier = Modifier
-                                    .size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Text(
-                                text = "Rate",
-                                textAlign = TextAlign.Center,
-                                style = TextStyle(
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight(500),
-                                    color = Color.White,
-                                )
-                            )
-                        }
+                        CircularProgressIndicator()
                     }
-
                 }
             }
+        }
+
+        is ApiResult.Error -> {
+            Scaffold {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                ){
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 15.dp, start = 20.dp)
+                            .align(Alignment.TopStart)
+                            .clickable {
+                                navController.popBackStack()
+                            }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIos,
+                            contentDescription = "Back Icon",
+                            tint = Color(0xFF666666),
+                            modifier = Modifier
+                                .size(23.dp)
+                        )
+                    }
+                    Box(modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(10.dp)
+                    ) {
+                        Text(text = (getBookDetailResult as ApiResult.Error).exception.toString())
+                    }
+                }
+            }
+
+        }
+
+        is ApiResult.Success -> {
+            val book = (getBookDetailResult as ApiResult.Success<Book>).data
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(top = 334.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = 24.dp)
             ) {
-                Text(
-                    text = "Fish Seeking Bicycle",
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFF333333),
+                if (isPopupVisible) {
+                    RatingPopup(
+                        currentRating = rating,
+                        onRatingSelected = { newRating ->
+                            rating = newRating
+                            isPopupVisible = false
+                        }
                     )
-                )
+                }
+                Box(
+                    modifier = Modifier
+                        .height(474.dp)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    HttpImage(
+                        url = book.imageL,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .alpha(0.2f),
+                    )
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 72.dp, start = 34.dp)
+                            .align(Alignment.TopStart)
+                            .clickable {
+                                navController.popBackStack()
+                            }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIos,
+                            contentDescription = "Back Icon",
+                            tint = Color(0xFF666666),
+                            modifier = Modifier
+                                .size(23.dp)
+                        )
+                    }
+                    Box(
+                        modifier = Modifier.padding(top = 64.dp)
+                    ) {
+                        HttpImage(
+                            url = book.imageL,
+                            modifier = Modifier
+                                .height(240.dp)
+                                .width(160.dp)
+                                .clip(RoundedCornerShape(8.dp)),
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 282.dp)
+                            .background(
+                                Color.Transparent
+                            )
+                    ) {
+                        Button(
+                            onClick = {
+                                isPopupVisible = true
+                            },
+                            modifier = Modifier
+                                .width(114.dp)
+                                .height(44.dp)
+                                .background(Color.Transparent),
+                            contentPadding = PaddingValues(0.dp),
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        brush = Brush.horizontalGradient(
+                                            colors = listOf(
+                                                Color(0xFFF953C6),
+                                                Color(0xFFB91D73),
+                                            ),
+                                        ),
+                                    )
+                                    .fillMaxSize(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ThumbUp,
+                                        contentDescription = "Star Icon",
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(
+                                        text = "Rate",
+                                        textAlign = TextAlign.Center,
+                                        style = TextStyle(
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight(500),
+                                            color = Color.White,
+                                        )
+                                    )
+                                }
+                            }
+
+                        }
+                    }
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(top = 334.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            text = "Fish Seeking Bicycle + $bookId",
+                            textAlign = TextAlign.Center,
+                            style = TextStyle(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight(600),
+                                color = Color(0xFF333333),
+                            )
+                        )
+                        Text(
+                            text = "Kate Cooch",
+                            textAlign = TextAlign.Center,
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFF666666),
+                            )
+                        )
+                        RatingBar(rating = rating)
+                    }
+                }
                 Text(
-                    text = "Kate Cooch",
-                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(20.dp),
+                    text = loremIpsum,
                     style = TextStyle(
                         fontSize = 13.sp,
                         fontWeight = FontWeight(400),
-                        color = Color(0xFF666666),
+                        color = Color(0xFF24253D),
                     )
                 )
-                RatingBar(rating = rating)
+                Text(
+                    modifier = Modifier.padding(top = 11.dp, start = 27.dp),
+                    text = "Related to this topic",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight(500),
+                        color = Color(0xFF6648A8),
+                    )
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(32.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(top = 20.dp, start = 27.dp, end = 27.dp),
+                ) {
+                    RecommendBookItem()
+                    RecommendBookItem()
+                    RecommendBookItem()
+                    RecommendBookItem()
+                    RecommendBookItem()
+                    RecommendBookItem()
+                }
+                Text(
+                    modifier = Modifier.padding(top = 11.dp, start = 27.dp),
+                    text = "Books you might like",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight(500),
+                        color = Color(0xFF6648A8),
+                    )
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(32.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(top = 20.dp, start = 27.dp, end = 27.dp),
+                ) {
+                    RecommendBookItem()
+                    RecommendBookItem()
+                    RecommendBookItem()
+                    RecommendBookItem()
+                    RecommendBookItem()
+                    RecommendBookItem()
+                }
             }
         }
-        Text(
-            modifier = Modifier.padding(20.dp),
-            text = loremIpsum,
-            style = TextStyle(
-                fontSize = 13.sp,
-                fontWeight = FontWeight(400),
-                color = Color(0xFF24253D),
-            )
-        )
-        Text(
-            modifier = Modifier.padding(top = 11.dp, start = 27.dp),
-            text = "Related to this topic",
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight(500),
-                color = Color(0xFF6648A8),
-            )
-        )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(32.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(top = 20.dp, start = 27.dp),
-        ) {
-            RecommendBookItem()
-            RecommendBookItem()
-            RecommendBookItem()
-            RecommendBookItem()
-            RecommendBookItem()
-            RecommendBookItem()
-        }
-        Text(
-            modifier = Modifier.padding(top = 11.dp, start = 27.dp),
-            text = "Books you might like",
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight(500),
-                color = Color(0xFF6648A8),
-            )
-        )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(32.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(top = 20.dp, start = 27.dp),
-        ) {
-            RecommendBookItem()
-            RecommendBookItem()
-            RecommendBookItem()
-            RecommendBookItem()
-            RecommendBookItem()
-            RecommendBookItem()
-        }
     }
+
+    
+
+
 }
 
 @Composable
