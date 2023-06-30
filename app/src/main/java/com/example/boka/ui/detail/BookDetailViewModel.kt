@@ -12,9 +12,11 @@ import kotlinx.coroutines.launch
 class BookDetailViewModel(private val bookRepo: BookRepo, bookId: Int) : ViewModel() {
     private val _getBookDetailResult = MutableStateFlow<ApiResult<Book>>(ApiResult.Loading)
     val getBookDetailResult: StateFlow<ApiResult<Book>> get() = _getBookDetailResult
-
+    private val _contentBasedBooks = MutableStateFlow<ApiResult<List<Book>>>(ApiResult.Loading)
+    val contentBasedBooks: StateFlow<ApiResult<List<Book>>> get() = _contentBasedBooks
     init {
         getBookDetail(bookId)
+        getContentBasedBook(bookId)
     }
 
     private fun getBookDetail(bookId: Int) {
@@ -32,6 +34,24 @@ class BookDetailViewModel(private val bookRepo: BookRepo, bookId: Int) : ViewMod
                 }
             } catch (e: Exception) {
                 _getBookDetailResult.value = ApiResult.Error(e)
+            }
+        }
+    }
+    private fun getContentBasedBook(bookId: Int){
+        viewModelScope.launch {
+            _contentBasedBooks.value = ApiResult.Loading
+            try {
+                val response = bookRepo.getContentBasedBook(bookId)
+                val books = response.data
+                val success = response.error == null && books != null
+                if (success) {
+                    _contentBasedBooks.value = ApiResult.Success(books ?: listOf())
+                } else {
+                    val errorBody = response.error
+                    _contentBasedBooks.value = ApiResult.Error(Exception(errorBody))
+                }
+            } catch (e: Exception) {
+                _contentBasedBooks.value = ApiResult.Error(e)
             }
         }
     }

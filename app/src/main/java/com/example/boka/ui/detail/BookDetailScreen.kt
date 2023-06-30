@@ -38,17 +38,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import com.example.boka.R
-import com.example.boka.core.loremIpsum
 import com.example.boka.data.model.Book
 import com.example.boka.data.network.api.ApiService
 import com.example.boka.data.network.book.BookService
@@ -64,6 +60,7 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
     val bookViewModel = remember { BookDetailViewModel(bookRepo, bookId ?: 0) }
 
     val getBookDetailResult by bookViewModel.getBookDetailResult.collectAsState()
+    val contentBasedBooks by bookViewModel.contentBasedBooks.collectAsState()
 
     var rating by remember { mutableStateOf(0) }
     var isPopupVisible by remember { mutableStateOf(false) }
@@ -71,26 +68,25 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
     when (getBookDetailResult) {
         is ApiResult.Loading -> {
             Scaffold {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                ){
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.Center),
-                    ) {
-                        CircularProgressIndicator()
-                    }
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
                 }
             }
         }
 
         is ApiResult.Error -> {
             Scaffold {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                ){
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it),
+                    contentAlignment = Alignment.Center
+                ) {
                     Box(
                         modifier = Modifier
                             .padding(top = 15.dp, start = 20.dp)
@@ -107,12 +103,7 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
                                 .size(23.dp)
                         )
                     }
-                    Box(modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(10.dp)
-                    ) {
-                        Text(text = (getBookDetailResult as ApiResult.Error).exception.toString())
-                    }
+                    Text(text = (getBookDetailResult as ApiResult.Error).exception.toString())
                 }
             }
 
@@ -234,16 +225,17 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
-                            text = "Fish Seeking Bicycle + $bookId",
+                            text = book.title,
                             textAlign = TextAlign.Center,
                             style = TextStyle(
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight(600),
                                 color = Color(0xFF333333),
-                            )
+                            ),
+                            modifier = Modifier.padding(horizontal = 20.dp)
                         )
                         Text(
-                            text = "Kate Cooch",
+                            text = book.author,
                             textAlign = TextAlign.Center,
                             style = TextStyle(
                                 fontSize = 13.sp,
@@ -256,7 +248,7 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
                 }
                 Text(
                     modifier = Modifier.padding(20.dp),
-                    text = loremIpsum,
+                    text = book.description,
                     style = TextStyle(
                         fontSize = 13.sp,
                         fontWeight = FontWeight(400),
@@ -279,12 +271,36 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
                         .horizontalScroll(rememberScrollState())
                         .padding(top = 20.dp, start = 27.dp, end = 27.dp),
                 ) {
-                    RecommendBookItem()
-                    RecommendBookItem()
-                    RecommendBookItem()
-                    RecommendBookItem()
-                    RecommendBookItem()
-                    RecommendBookItem()
+                    when (contentBasedBooks) {
+                        is ApiResult.Loading -> {
+                            Box(
+                                modifier = Modifier
+                                    .height(100.dp)
+                                    .fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+
+                        is ApiResult.Error -> {
+                            Box(
+                                modifier = Modifier
+                                    .height(100.dp)
+                                    .fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(text = (contentBasedBooks as ApiResult.Error).exception.toString())
+                            }
+                        }
+
+                        is ApiResult.Success -> {
+                            val books = (contentBasedBooks as ApiResult.Success<List<Book>>).data
+                            books.forEach { book ->
+                                RecommendBookItem(book)
+                            }
+                        }
+                    }
                 }
                 Text(
                     modifier = Modifier.padding(top = 11.dp, start = 27.dp),
@@ -302,44 +318,42 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
                         .horizontalScroll(rememberScrollState())
                         .padding(top = 20.dp, start = 27.dp, end = 27.dp),
                 ) {
-                    RecommendBookItem()
-                    RecommendBookItem()
-                    RecommendBookItem()
-                    RecommendBookItem()
-                    RecommendBookItem()
-                    RecommendBookItem()
+                    RecommendBookItem(Book.NULL)
+                    RecommendBookItem(Book.NULL)
+                    RecommendBookItem(Book.NULL)
+                    RecommendBookItem(Book.NULL)
+                    RecommendBookItem(Book.NULL)
                 }
             }
         }
     }
 
-    
-
 
 }
 
 @Composable
-fun RecommendBookItem() {
-    Column {
-        AsyncImage(
-            model = "https://link.gdsc.app/YE0xs05",
-            contentDescription = "Content base",
-            placeholder = painterResource(R.drawable.book),
+fun RecommendBookItem(book: Book) {
+    Column(
+        modifier = Modifier.width(90.dp)
+    ) {
+        HttpImage(
+            url = book.imageL,
             modifier = Modifier
                 .width(90.dp)
                 .height(126.dp)
                 .clip(RoundedCornerShape(16.dp)),
-            contentScale = ContentScale.Crop,
         )
         Spacer(modifier = Modifier.height(11.dp))
         Text(
-            text = "Dưới vò ...",
+            text = book.title,
             textAlign = TextAlign.Center,
             style = TextStyle(
                 fontSize = 14.sp,
                 fontWeight = FontWeight(500),
                 color = Color(0xFF2D2D2D),
-            )
+            ),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

@@ -11,4 +11,6 @@ interface BookApi {
     suspend fun getBookDetail(@Path("bookId") bookId : Int) : Response<BodyResult<BookJson>>
     @GET("books/top_rated")
     suspend fun getTopRatedBooks() : Response<BodyResult<List<BookJson>>>
+    @GET("books/{bookId}/related")
+    suspend fun getContentBasedBook(@Path("bookId") bookId : Int) : Response<BodyResult<List<BookJson>>>
 }
