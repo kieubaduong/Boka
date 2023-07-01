@@ -1,9 +1,12 @@
 package com.example.boka.data.network.api
 
 import com.example.boka.core.BodyResult
+import com.example.boka.data.network.book.body.ReviewBookBody
 import com.example.boka.data.network.book.result.BookJson
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface BookApi {
@@ -13,4 +16,6 @@ interface BookApi {
     suspend fun getTopRatedBooks() : Response<BodyResult<List<BookJson>>>
     @GET("books/{bookId}/related")
     suspend fun getContentBasedBook(@Path("bookId") bookId : Int) : Response<BodyResult<List<BookJson>>>
+    @POST("book_ratings")
+    suspend fun rateBook(@Body reviewBookBody: ReviewBookBody) : Response<BodyResult<Any>>
 }

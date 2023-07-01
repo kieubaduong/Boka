@@ -21,9 +21,12 @@ data class BookJson(
     @SerializedName("image_l")
     val imageL : String,
     val tags : List<String>,
-    val rating : Double,
-    @SerializedName("review_count")
-    val reviewCount : Int,
+    @SerializedName("rating_avg")
+    val ratingAvg : Double,
+    @SerializedName("rating_count")
+    val ratingCount : Int,
+    @SerializedName("user_rating")
+    val userRating : Int?,
     val genres : List<Genre>,
 ){
     fun toBook(): Book {
@@ -36,12 +39,14 @@ data class BookJson(
             author = author,
             yearOfPublication = yearOfPublication,
             publisher = publisher,
-            rating = rating,
+            ratingAvg = ratingAvg,
+            ratingCount = ratingCount,
+            userRating = userRating ?: 0,
             category = category,
             tags = tags,
             imageS = imageS,
             imageM = imageM,
-            imageL = imageL
+            imageL = imageL,
         )
     }
 }

@@ -69,7 +69,7 @@ fun HistoryScreen(navController: NavHostController) {
         ) {
             bookEntities.forEach { book ->
                 book.title.let {
-                    book.rating.let { it1 ->
+                    book.ratingAvg.let { it1 ->
                         book.category.let { it2 ->
                             Box (
                                 modifier = Modifier
@@ -164,9 +164,9 @@ fun BookItem(
 }
 
 val bookEntities = listOf(
-    Book(title = "Enter Prise Design Sprints", rating =  3.0, category =  "Northwestern"),
-    Book(title ="Enter Prise Design Sprints",rating =  3.0,category =  "Northwestern"),
-    Book(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
-    Book(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
-    Book(title ="Enter Prise Design Sprints", rating = 3.0,category =  "Northwestern"),
+    Book(title = "Enter Prise Design Sprints", ratingAvg =  3.0, category =  "Northwestern"),
+    Book(title ="Enter Prise Design Sprints",ratingAvg =  3.0,category =  "Northwestern"),
+    Book(title ="Enter Prise Design Sprints", ratingAvg = 3.0,category =  "Northwestern"),
+    Book(title ="Enter Prise Design Sprints", ratingAvg = 3.0,category =  "Northwestern"),
+    Book(title ="Enter Prise Design Sprints", ratingAvg = 3.0,category =  "Northwestern"),
 )

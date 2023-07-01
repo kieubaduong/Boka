@@ -5,6 +5,7 @@ import com.example.boka.core.BodyResult
 import com.example.boka.data.model.Book
 import com.example.boka.data.model.NetworkResult
 import com.example.boka.data.network.book.BookService
+import com.example.boka.data.network.book.body.ReviewBookBody
 import com.example.boka.data.network.book.result.BookJson
 
 class BookRepo(private val bookService: BookService) : BaseRepo() {
@@ -19,5 +20,9 @@ class BookRepo(private val bookService: BookService) : BaseRepo() {
     suspend fun getContentBasedBook(bookId: Int): NetworkResult<List<Book>> {
         val res: NetworkResult<BodyResult<List<BookJson>>> = bookService.getContentBasedBook(bookId)
         return handleNetworkResult(res) { it.data.map { bookJson -> bookJson.toBook() } }
+    }
+    suspend fun rateBook(rating: Int, bookId: Int): NetworkResult<Any> {
+        val res: NetworkResult<BodyResult<Any>> = bookService.rateBook(ReviewBookBody(rating, bookId))
+        return handleNetworkResult(res) { it.data }
     }
 }

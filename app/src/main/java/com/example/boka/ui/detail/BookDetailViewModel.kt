@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 class BookDetailViewModel(private val bookRepo: BookRepo, bookId: Int) : ViewModel() {
     private val _getBookDetailResult = MutableStateFlow<ApiResult<Book>>(ApiResult.Loading)
     val getBookDetailResult: StateFlow<ApiResult<Book>> get() = _getBookDetailResult
+
     private val _contentBasedBooks = MutableStateFlow<ApiResult<List<Book>>>(ApiResult.Loading)
     val contentBasedBooks: StateFlow<ApiResult<List<Book>>> get() = _contentBasedBooks
     init {
@@ -19,7 +20,7 @@ class BookDetailViewModel(private val bookRepo: BookRepo, bookId: Int) : ViewMod
         getContentBasedBook(bookId)
     }
 
-    private fun getBookDetail(bookId: Int) {
+    fun getBookDetail(bookId: Int) {
         viewModelScope.launch {
             _getBookDetailResult.value = ApiResult.Loading
             try {

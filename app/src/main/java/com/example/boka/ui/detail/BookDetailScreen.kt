@@ -57,10 +57,10 @@ import com.example.boka.util.ApiResult
 fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
     val bookService = BookService(ApiService.bookApi)
     val bookRepo = BookRepo(bookService)
-    val bookViewModel = remember { BookDetailViewModel(bookRepo, bookId ?: 0) }
+    val bookDetailViewModel = remember { BookDetailViewModel(bookRepo, bookId ?: 0) }
 
-    val getBookDetailResult by bookViewModel.getBookDetailResult.collectAsState()
-    val contentBasedBooks by bookViewModel.contentBasedBooks.collectAsState()
+    val getBookDetailResult by bookDetailViewModel.getBookDetailResult.collectAsState()
+    val contentBasedBooks by bookDetailViewModel.contentBasedBooks.collectAsState()
 
     var rating by remember { mutableStateOf(0) }
     var isPopupVisible by remember { mutableStateOf(false) }
@@ -110,7 +110,8 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
         }
 
         is ApiResult.Success -> {
-            val book = (getBookDetailResult as ApiResult.Success<Book>).data
+            val book = (getBookDetailResult as ApiResult.Success).data
+            rating = book.userRating
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
@@ -122,7 +123,12 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
                         onRatingSelected = { newRating ->
                             rating = newRating
                             isPopupVisible = false
-                        }
+                            if (bookId != null) {
+                                bookDetailViewModel.getBookDetail(bookId)
+                            }
+                        },
+                        bookId = bookId ?: 0,
+                        bookRepo = bookRepo,
                     )
                 }
                 Box(
@@ -174,6 +180,7 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
                         Button(
                             onClick = {
                                 isPopupVisible = true
+
                             },
                             modifier = Modifier
                                 .width(114.dp)
@@ -327,8 +334,6 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
             }
         }
     }
-
-
 }
 
 @Composable

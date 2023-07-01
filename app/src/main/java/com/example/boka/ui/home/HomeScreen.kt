@@ -203,7 +203,7 @@ fun HomeScreen(navController: NavHostController) {
                 items(recommendedBookEntities) { book ->
                     Box(
                         modifier = Modifier.clickable {
-                            navController.navigate(Graph.DETAIL)
+                            navController.navigate("${NormalScreen.BookDetail.route}/${book.id}")
                         }
                     ) {
                         BookItem(book)
@@ -225,7 +225,7 @@ fun HomeScreen(navController: NavHostController) {
                 items(recommendedBookEntities) { book ->
                     Box(
                         modifier = Modifier.clickable {
-                            navController.navigate(Graph.DETAIL)
+                            navController.navigate("${NormalScreen.BookDetail.route}/${book.id}")
                         }
                     ) {
                         BookItem(book)
@@ -284,7 +284,7 @@ fun BookItem(book: Book) {
                             .size(14.dp)
                     )
                     Text(
-                        text = book.rating.toString(),
+                        text = book.ratingAvg.toString(),
                         style = TextStyle(fontSize = 12.sp, color = Color.White),
                     )
                 }
@@ -319,31 +319,31 @@ fun BookItem(book: Book) {
 val recommendedBookEntities = listOf(
     Book(
         title = "Book 6",
-        rating = 4.0,
+        ratingAvg = 4.0,
         category = "horror, zombies,...",
         imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
     ),
     Book(
         title = "Book 7",
-        rating = 4.0,
+        ratingAvg = 4.0,
         category = "horror, zombies,...",
         imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
     ),
     Book(
         title = "Book 8",
-        rating = 3.0,
+        ratingAvg = 3.0,
         category = "horror, zombies,...",
         imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
     ),
     Book(
         title = "Book 9",
-        rating = 3.0,
+        ratingAvg = 3.0,
         category = "horror, zombies,...",
         imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
     ),
     Book(
         title = "Book 10",
-        rating = 3.0,
+        ratingAvg = 3.0,
         category = "horror, zombies,...",
         imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
     ),

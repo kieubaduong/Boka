@@ -3,6 +3,7 @@ package com.example.boka.ui.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chaquo.python.Python
 import com.example.boka.data.model.Book
 import com.example.boka.data.repository.BookRepo
 import com.example.boka.util.ApiResult
@@ -17,6 +18,14 @@ class HomeViewModel(private val bookRepo: BookRepo) : ViewModel() {
 
     init {
         getTopRatedBooks()
+        getUserBasedBooks()
+    }
+
+    private fun getUserBasedBooks(){
+        val py = Python.getInstance()
+        val module = py.getModule("user_based_model")
+        val userBasedBooks = module["get_user_based_books"]?.call("{\"0553265865\":4,\"1400062888\":5,\"071484103X\":3}")
+        Log.d("Python model", userBasedBooks.toString())
     }
 
     private fun getTopRatedBooks() {

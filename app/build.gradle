@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'com.chaquo.python'
 }
 
 android {
@@ -19,6 +20,20 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
+        }
+
+        python {
+            version "3.8"
+            buildPython "C:/Users/kieub/AppData/Local/Programs/Python/Python310/python.exe"
+            pip {
+                install "numpy"
+                install "pandas"
+                install "scikit_learn"
+            }
+        }
+
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
         }
     }
 
