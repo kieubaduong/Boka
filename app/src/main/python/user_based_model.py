@@ -21,6 +21,8 @@ def extract_user_features(ratings, df_book, book_features_v2):
     if not ratings:
         return default_features
 
+    ratings = json.loads(ratings)
+
     for isbn, rating in ratings.items():
         book_info = df_book[df_book['isbn'] == isbn]
         if not book_info.empty:

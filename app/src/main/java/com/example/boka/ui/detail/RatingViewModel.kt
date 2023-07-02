@@ -12,7 +12,6 @@ class RatingViewModel(private val bookRepo: BookRepo, private val bookId : Int) 
     var rating: Int = 0
     private val _rateBookResult = MutableStateFlow<ApiResult<Any>>(ApiResult.Loading)
     val rateBookResult: StateFlow<ApiResult<Any>> get() = _rateBookResult
-
     fun rateBook(rating: Int) {
         _rateBookResult.value = ApiResult.Loading
         viewModelScope.launch {

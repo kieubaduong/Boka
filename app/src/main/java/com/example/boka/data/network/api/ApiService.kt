@@ -27,6 +27,12 @@ object ApiService {
         }
         retrofit!!.create(BookApi::class.java)
     }
+    val historyApi : HistoryApi by lazy {
+        if (retrofit == null) {
+            buildRetrofit()
+        }
+        retrofit!!.create(HistoryApi::class.java)
+    }
 
     private val tokenInterceptor = Interceptor { chain ->
         val originalRequest = chain.request()

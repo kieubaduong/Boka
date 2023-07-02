@@ -1,33 +1,83 @@
 package com.example.boka.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chaquo.python.Python
 import com.example.boka.data.model.Book
 import com.example.boka.data.repository.BookRepo
+import com.example.boka.data.repository.HistoryRepo
 import com.example.boka.util.ApiResult
+import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class HomeViewModel(private val bookRepo: BookRepo) : ViewModel() {
+class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: HistoryRepo) : ViewModel() {
 
     private val _topRatedBooks = MutableStateFlow<ApiResult<List<Book>>>(ApiResult.Loading)
     val topRatedBooks: StateFlow<ApiResult<List<Book>>> get() = _topRatedBooks
+    private val _userBasedBooks = MutableStateFlow<ApiResult<List<Book>>>(ApiResult.Loading)
+    val userBasedBooks: StateFlow<ApiResult<List<Book>>> get() = _userBasedBooks
+    private var userRating : String? = null
 
     init {
         getTopRatedBooks()
         getUserBasedBooks()
     }
 
-    private fun getUserBasedBooks(){
-        val py = Python.getInstance()
-        val module = py.getModule("user_based_model")
-        val userBasedBooks = module["get_user_based_books"]?.call("{\"0553265865\":4,\"1400062888\":5,\"071484103X\":3}")
-        Log.d("Python model", userBasedBooks.toString())
+    private suspend fun getUserRating(){
+        return withContext(Dispatchers.IO){
+            try{
+                val res = historyRepo.getUserRating()
+                if(res.data != null){
+                    userRating = Gson().toJson(res.data)
+                    userRating = userRating.toString().replace("\"", "\\\"")
+                }
+                else{
+                    userRating = null
+                }
+            }
+            catch (e : Exception) {
+                userRating = null
+            }
+        }
     }
 
+    private fun getUserBasedBooks(){
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) { getUserRating() }
+            val py = Python.getInstance()
+            val module = py.getModule("user_based_model")
+            var isbns: String? = null
+
+            userRating?.let {
+                ratings ->
+                val userBasedBooks = module["get_user_based_books"]?.call("\"$ratings\"")
+                var data = userBasedBooks.toString()
+                data = data.replace("[", "").replace("]", "")
+                isbns = data.split(", ").map { it.replace("\"", "") }.joinToString(separator = ",") { it }
+            }
+
+            isbns?.let {
+                try {
+                    val res = bookRepo.getBooks(it)
+                    if(res.data != null){
+                        _userBasedBooks.value = ApiResult.Success(res.data)
+                    }
+                    else{
+                        _userBasedBooks.value = ApiResult.Error(Exception(res.error))
+                    }
+                }
+                catch (e: Exception) {
+                    _userBasedBooks.value = ApiResult.Error(Exception("ViewModel layer: ${e.message}"))
+                }
+                return@launch
+            }
+            _userBasedBooks.value = ApiResult.Error(Exception("ViewModel layer: ${"No user rating"}"))
+        }
+    }
     private fun getTopRatedBooks() {
         viewModelScope.launch {
             try{

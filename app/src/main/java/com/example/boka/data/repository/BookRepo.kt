@@ -9,6 +9,10 @@ import com.example.boka.data.network.book.body.ReviewBookBody
 import com.example.boka.data.network.book.result.BookJson
 
 class BookRepo(private val bookService: BookService) : BaseRepo() {
+    suspend fun getBooks(isbns: String): NetworkResult<List<Book>> {
+        val res: NetworkResult<BodyResult<List<BookJson>>> = bookService.getBooks(isbns)
+        return handleNetworkResult(res) { it.data.map { bookJson -> bookJson.toBook() } }
+    }
     suspend fun getBookDetail(bookId: Int): NetworkResult<Book> {
         val res: NetworkResult<BodyResult<BookJson>> = bookService.getBookDetail(bookId)
         return handleNetworkResult(res) { it.data.toBook() }

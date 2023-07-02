@@ -8,8 +8,11 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface BookApi {
+    @GET("books")
+    suspend fun getBooks(@Query("isbns") isbns : String) : Response<BodyResult<List<BookJson>>>
     @GET("books/{bookId}")
     suspend fun getBookDetail(@Path("bookId") bookId : Int) : Response<BodyResult<BookJson>>
     @GET("books/top_rated")

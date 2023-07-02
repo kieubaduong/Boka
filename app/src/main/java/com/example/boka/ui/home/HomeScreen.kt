@@ -52,7 +52,9 @@ import com.example.boka.core.NormalScreen
 import com.example.boka.data.model.Book
 import com.example.boka.data.network.api.ApiService
 import com.example.boka.data.network.book.BookService
+import com.example.boka.data.network.history.HistoryService
 import com.example.boka.data.repository.BookRepo
+import com.example.boka.data.repository.HistoryRepo
 import com.example.boka.graph.Graph
 import com.example.boka.ui.common.HttpImage
 import com.example.boka.ui.theme.AppColor
@@ -62,11 +64,19 @@ import com.example.boka.util.gradientBackground
 @Composable
 fun HomeScreen(navController: NavHostController) {
     val bookApi = ApiService.bookApi
-    val bookService = BookService(bookApi)
-    val bookRepo = BookRepo(bookService)
-    val homeViewModel = remember { HomeViewModel(bookRepo) }
+    val historyApi = ApiService.historyApi
 
-    val topRatedBooksResult by homeViewModel.topRatedBooks.collectAsState()
+
+    val bookService = BookService(bookApi)
+    val historyService = HistoryService(historyApi)
+
+    val bookRepo = BookRepo(bookService)
+    val historyRepo = HistoryRepo(historyService)
+
+    val homeViewModel = remember { HomeViewModel(bookRepo, historyRepo) }
+
+    val topRatedBooks by homeViewModel.topRatedBooks.collectAsState()
+    val userBasedBooks by homeViewModel.userBasedBooks.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -149,9 +159,9 @@ fun HomeScreen(navController: NavHostController) {
                 )
             }
 
-            when (topRatedBooksResult) {
+            when (topRatedBooks) {
                 is ApiResult.Success -> {
-                    val topBooks = (topRatedBooksResult as ApiResult.Success<List<Book>>).data
+                    val topBooks = (topRatedBooks as ApiResult.Success<List<Book>>).data
                     LazyRow(
                         modifier = Modifier.padding(16.dp, top = 0.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -170,7 +180,7 @@ fun HomeScreen(navController: NavHostController) {
 
                 is ApiResult.Error -> {
                     Text(
-                        text = (topRatedBooksResult as ApiResult.Error).exception.message
+                        text = (topRatedBooks as ApiResult.Error).exception.message
                             ?: "Error",
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
@@ -196,17 +206,44 @@ fun HomeScreen(navController: NavHostController) {
                 text = "Recommended for you",
                 style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
             )
-            LazyRow(
-                modifier = Modifier.padding(16.dp, top = 0.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(recommendedBookEntities) { book ->
-                    Box(
-                        modifier = Modifier.clickable {
-                            navController.navigate("${NormalScreen.BookDetail.route}/${book.id}")
-                        }
+
+            when (userBasedBooks) {
+                is ApiResult.Success -> {
+                    val books = (userBasedBooks as ApiResult.Success<List<Book>>).data
+                    LazyRow(
+                        modifier = Modifier.padding(16.dp, top = 0.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        BookItem(book)
+                        items(books) { book ->
+                            Box(
+                                modifier = Modifier.clickable {
+                                    navController.navigate("${NormalScreen.BookDetail.route}/${book.id}")
+                                }
+                            ) {
+                                BookItem(book)
+                            }
+                        }
+                    }
+                }
+
+                is ApiResult.Error -> {
+                    Text(
+                        text = (userBasedBooks as ApiResult.Error).exception.message
+                            ?: "Error",
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                        style = TextStyle(color = Color.Red),
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+
+                is ApiResult.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(vertical = 8.dp)
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
             }
