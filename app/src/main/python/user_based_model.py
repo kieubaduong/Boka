@@ -3,12 +3,14 @@ import pandas as pd
 import json
 import warnings
 from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.preprocessing import normalize
+from sklearn.cluster import KMeans
+from sklearn.neighbors import NearestNeighbors
 import os
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 def extract_user_features(ratings, df_book, book_features_v2):
+    ratings = json.loads(ratings)
     def convert_to_vector(x):
         x = x.strip().rstrip("\\n")
         return np.fromstring(x[1:-1], sep=' ')
@@ -41,15 +43,20 @@ def get_recommended_books(input_vector, df_user_features, df_rating, df_book):
     user_features = np.array([np.fromstring(features[1:-1], dtype=float, sep=' ') for features in df_user_features['feature']])
     user_ids = df_user_features['user-id'].values
 
-    normalized_user_features = normalize(user_features)
+    n_clusters = 2
+    kmeans = KMeans(n_clusters=n_clusters, n_init=10)
+    cluster_labels = kmeans.fit_predict(user_features)
+    nearest_cluster = kmeans.predict([input_vector])[0]
 
-    normalized_input_vector = normalize(input_vector.reshape(1, -1))
+    users_in_cluster = user_ids[cluster_labels == nearest_cluster]
+    users_in_cluster_features = user_features[cluster_labels == nearest_cluster]
 
-    cosine_similarities = cosine_similarity(normalized_input_vector, normalized_user_features)
+    k = 10
+    nn = NearestNeighbors(n_neighbors=k)
+    nn.fit(users_in_cluster_features)
+    distances, indices = nn.kneighbors([input_vector])
 
-    sorted_indices = np.argsort(cosine_similarities)[0][::-1]
-    nearest_users = user_ids[sorted_indices]
-
+    nearest_users = users_in_cluster[indices[0]]
     recommended_books = []
     book_seen = set()
 
@@ -72,9 +79,10 @@ def get_recommended_books(input_vector, df_user_features, df_rating, df_book):
             book_info_dict = book_info.iloc[0]['isbn']
             recommended_books_info.append(book_info_dict)
 
+    print(recommended_books_info)
     return recommended_books_info
 
-def get_user_based_books(input_data):
+def main(input_data):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     csv_file_path = os.path.join(current_dir, 'book_features_v2.csv')
     book_features_v2 = pd.read_csv(csv_file_path)
@@ -85,7 +93,6 @@ def get_user_based_books(input_data):
     csv_file_path = os.path.join(current_dir, 'user_features_v2.csv')
     df_user_features = pd.read_csv(csv_file_path)
 
-    input_data = json.loads(input_data)
     output = extract_user_features(input_data, df_book, book_features_v2)
     output = get_recommended_books(output, df_user_features, df_rating, df_book)
 
