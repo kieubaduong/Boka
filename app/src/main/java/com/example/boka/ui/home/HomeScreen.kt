@@ -66,7 +66,6 @@ fun HomeScreen(navController: NavHostController) {
     val bookApi = ApiService.bookApi
     val historyApi = ApiService.historyApi
 
-
     val bookService = BookService(bookApi)
     val historyService = HistoryService(historyApi)
 
@@ -169,7 +168,7 @@ fun HomeScreen(navController: NavHostController) {
                         items(topBooks) { book ->
                             Box(
                                 modifier = Modifier.clickable {
-                                    navController.navigate("${NormalScreen.BookDetail.route}/${book.id}")
+                                    navController.navigate("${NormalScreen.BookDetail.route}/${book.id}&${book.isbn}")
                                 }
                             ) {
                                 BookItem(book)
@@ -217,7 +216,7 @@ fun HomeScreen(navController: NavHostController) {
                         items(books) { book ->
                             Box(
                                 modifier = Modifier.clickable {
-                                    navController.navigate("${NormalScreen.BookDetail.route}/${book.id}")
+                                    navController.navigate("${NormalScreen.BookDetail.route}/${book.id}&${book.isbn}")
                                 }
                             ) {
                                 BookItem(book)
@@ -262,7 +261,7 @@ fun HomeScreen(navController: NavHostController) {
                 items(recommendedBookEntities) { book ->
                     Box(
                         modifier = Modifier.clickable {
-                            navController.navigate("${NormalScreen.BookDetail.route}/${book.id}")
+                            navController.navigate("${NormalScreen.BookDetail.route}/${book.id}&${book.isbn}")
                         }
                     ) {
                         BookItem(book)

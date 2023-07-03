@@ -54,13 +54,14 @@ import com.example.boka.ui.common.RatingBar
 import com.example.boka.util.ApiResult
 
 @Composable
-fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
+fun BookDetailScreen(navController: NavHostController, bookId: Int?, isbn: String) {
     val bookService = BookService(ApiService.bookApi)
     val bookRepo = BookRepo(bookService)
-    val bookDetailViewModel = remember { BookDetailViewModel(bookRepo, bookId ?: 0) }
+    val bookDetailViewModel = remember { BookDetailViewModel(bookRepo, bookId ?: 0, isbn) }
 
     val getBookDetailResult by bookDetailViewModel.getBookDetailResult.collectAsState()
     val contentBasedBooks by bookDetailViewModel.contentBasedBooks.collectAsState()
+    val itemBasedBooks by bookDetailViewModel.itemBasedBooks.collectAsState()
 
     var rating by remember { mutableStateOf(0) }
     var isPopupVisible by remember { mutableStateOf(false) }
@@ -325,11 +326,36 @@ fun BookDetailScreen(navController: NavHostController, bookId: Int?) {
                         .horizontalScroll(rememberScrollState())
                         .padding(top = 20.dp, start = 27.dp, end = 27.dp),
                 ) {
-                    RecommendBookItem(Book.NULL)
-                    RecommendBookItem(Book.NULL)
-                    RecommendBookItem(Book.NULL)
-                    RecommendBookItem(Book.NULL)
-                    RecommendBookItem(Book.NULL)
+                    when (itemBasedBooks) {
+                        is ApiResult.Loading -> {
+                            Box(
+                                modifier = Modifier
+                                    .height(100.dp)
+                                    .fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+
+                        is ApiResult.Error -> {
+                            Box(
+                                modifier = Modifier
+                                    .height(100.dp)
+                                    .fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(text = (itemBasedBooks as ApiResult.Error).exception.toString())
+                            }
+                        }
+
+                        is ApiResult.Success -> {
+                            val books = (itemBasedBooks as ApiResult.Success<List<Book>>).data
+                            books.forEach { book ->
+                                RecommendBookItem(book)
+                            }
+                        }
+                    }
                 }
             }
         }

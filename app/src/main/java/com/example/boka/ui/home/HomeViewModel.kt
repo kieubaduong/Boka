@@ -54,8 +54,8 @@ class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: His
 
             userRating?.let {
                 ratings ->
-                val userBasedBooks = module["main"]?.call("\"$ratings\"")
-                var data = userBasedBooks.toString()
+                val isbnOfUserBasedBooks = module["main"]?.call("\"$ratings\"")
+                var data = isbnOfUserBasedBooks.toString()
                 data = data.replace("[", "").replace("]", "")
                 isbns = data.split(", ").map { it.replace("\"", "") }.joinToString(separator = ",") { it }
             }
