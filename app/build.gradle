@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.boka"
-        minSdk 29
+        minSdk 33
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -64,7 +64,7 @@ android {
 }
 
 dependencies{
-    def nav_version = "2.5.3"
+    def nav_version = "2.6.0"
     def compose_version = '1.4.3'
 
     // navigation
@@ -74,16 +74,15 @@ dependencies{
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.activity:activity-compose:1.7.1'
+    implementation 'androidx.activity:activity-compose:1.7.2'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.compose.material3:material3:1.2.0-alpha01'
+    implementation 'androidx.compose.material3:material3:1.1.1'
+
+//    implementation "androidx.compose.animation:animation:1.2.0"
 
     // coil (network image loading)
     implementation("io.coil-kt:coil-compose:2.3.0")
-
-    // glide (network image loading)
-    implementation 'com.github.bumptech.glide:glide:4.15.1'
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

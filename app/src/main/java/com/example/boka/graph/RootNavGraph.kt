@@ -13,9 +13,9 @@ import androidx.navigation.compose.composable
 import com.example.boka.core.GlobalData
 import com.example.boka.core.PreferencesKeys
 import com.example.boka.core.dataStore
+import com.example.boka.data.model.User
 import com.example.boka.data.network.api.ApiService
 import com.example.boka.data.network.auth.AuthService
-import com.example.boka.data.model.User
 import com.example.boka.data.repository.AuthRepo
 import com.example.boka.ui.BaseScreen
 import kotlinx.coroutines.flow.first
@@ -60,6 +60,18 @@ fun RootNavGraph(navController: NavHostController){
                 composable(route = Graph.BASE) {
                     BaseScreen()
                 }
+            }
+        }
+    }
+    else{
+        NavHost(
+            navController = navController,
+            route = Graph.ROOT,
+            startDestination = Graph.AUTHENTICATION
+        ) {
+            authNavGraph(navController)
+            composable(route = Graph.BASE) {
+                BaseScreen()
             }
         }
     }

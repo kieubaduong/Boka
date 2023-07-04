@@ -378,6 +378,7 @@ fun RecommendBookItem(book: Book) {
         Text(
             text = book.title,
             textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
             style = TextStyle(
                 fontSize = 14.sp,
                 fontWeight = FontWeight(500),

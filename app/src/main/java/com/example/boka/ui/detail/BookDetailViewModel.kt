@@ -62,6 +62,7 @@ class BookDetailViewModel(private val bookRepo: BookRepo, bookId: Int, isbn: Str
         }
     }
     private fun getItemBasedBook(isbn: String) {
+        _itemBasedBooks.value = ApiResult.Loading
         viewModelScope.launch {
             val py = Python.getInstance()
             val module = py.getModule("item_based_model")
@@ -70,7 +71,7 @@ class BookDetailViewModel(private val bookRepo: BookRepo, bookId: Int, isbn: Str
             val isbnOfItemBasedBooks = module["main"]?.call(isbn)
             var data = isbnOfItemBasedBooks.toString()
             data = data.replace("[", "").replace("]", "")
-            isbns = data.split(", ").map { it.replace("\"", "") }.joinToString(separator = ",") { it }
+            isbns = data.split(", ").map { it.replace("\'", "") }.joinToString(separator = ",") { it }
 
             try {
                 val res = bookRepo.getBooks(isbns)
