@@ -7,7 +7,7 @@ data class User(
     val email: String? = "",
     val createdAt: LocalDateTime? = LocalDateTime.MIN,
     val updatedAt: LocalDateTime? = LocalDateTime.MIN,
-    val favoriteGenres : List<Int> = emptyList(),
+    val favoriteGenres : List<String> = emptyList(),
     var token : String? = null
 ){
     companion object {

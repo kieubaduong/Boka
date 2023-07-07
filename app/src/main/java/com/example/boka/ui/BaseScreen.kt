@@ -1,6 +1,5 @@
 package com.example.boka.ui
 
-import com.example.boka.core.BottomBarScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,7 +17,8 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.boka.graph.BaseNavGraph
+import com.example.boka.core.BottomBarScreen
+import com.example.boka.navigation.BaseNavGraph
 import com.example.boka.ui.theme.AppColor
 
 @Composable
@@ -53,6 +53,7 @@ fun BaseScreen() {
                             },
                             selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                             onClick = {
+                                navController.popBackStack()
                                 navController.navigate(screen.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true

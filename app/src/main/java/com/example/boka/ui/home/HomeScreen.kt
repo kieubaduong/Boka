@@ -55,7 +55,7 @@ import com.example.boka.data.network.book.BookService
 import com.example.boka.data.network.history.HistoryService
 import com.example.boka.data.repository.BookRepo
 import com.example.boka.data.repository.HistoryRepo
-import com.example.boka.graph.Graph
+import com.example.boka.navigation.Graph
 import com.example.boka.ui.common.HttpImage
 import com.example.boka.ui.theme.AppColor
 import com.example.boka.util.ApiResult

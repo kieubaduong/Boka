@@ -46,11 +46,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.boka.core.BottomBarScreen
 import com.example.boka.core.dataStore
 import com.example.boka.data.network.api.ApiService
 import com.example.boka.data.network.auth.AuthService
 import com.example.boka.data.repository.AuthRepo
-import com.example.boka.graph.Graph
 import com.example.boka.ui.theme.AppColor
 import com.example.boka.util.ApiResult
 import com.example.boka.util.gradientBackground
@@ -212,7 +212,7 @@ fun SignInScreen(navController: NavHostController) {
                     is ApiResult.Success -> {
                         LaunchedEffect(Unit) {
                             navController.popBackStack()
-                            navController.navigate(Graph.BASE)
+                            navController.navigate(BottomBarScreen.Home.route)
                         }
                     }
                     is ApiResult.Error -> {
@@ -244,6 +244,12 @@ fun SignInScreen(navController: NavHostController) {
                                     .size(60.dp),
                                 color = AppColor.purple
                             )
+                        }
+                    }
+                    is ApiResult.Success -> {
+                        LaunchedEffect(Unit) {
+                            navController.popBackStack()
+                            navController.navigate(BottomBarScreen.Home.route)
                         }
                     }
                     else -> {}

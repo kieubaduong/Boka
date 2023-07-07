@@ -1,4 +1,4 @@
-package com.example.boka.graph
+package com.example.boka.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController

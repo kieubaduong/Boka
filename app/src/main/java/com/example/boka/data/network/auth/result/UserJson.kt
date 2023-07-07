@@ -14,7 +14,7 @@ data class UserJson(
     @SerializedName("updated_at")
     val updatedAt: String,
     @SerializedName("favorite_genres")
-    val favoriteGenres : List<Int> = emptyList(),
+    val favoriteGenres : List<String> = emptyList(),
 ){
     fun toUser() : User {
         val formatter = DateTimeFormatter.ISO_DATE_TIME

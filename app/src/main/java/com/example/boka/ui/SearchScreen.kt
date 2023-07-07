@@ -42,7 +42,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.boka.R
 import com.example.boka.ui.common.RatingBar
-import com.example.boka.graph.Graph
+import com.example.boka.navigation.Graph
 import com.example.boka.ui.theme.AppColor
 
 @Composable

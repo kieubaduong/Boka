@@ -1,4 +1,4 @@
-package com.example.boka.graph
+package com.example.boka.navigation
 
 object Graph {
     const val ROOT = "root_graph"

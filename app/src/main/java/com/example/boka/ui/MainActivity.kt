@@ -6,8 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.example.boka.graph.RootNavGraph
-import com.example.boka.ui.detail.BookDetailScreen
+import com.example.boka.navigation.RootNavGraph
 import com.example.boka.ui.theme.BookReadingApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -26,6 +25,6 @@ class MainActivity : ComponentActivity() {
 fun DefaultPreview() {
     val navController = rememberNavController()
     BookReadingApplicationTheme {
-        BookDetailScreen(navController, bookId = 0, "")
+        RootNavGraph(navController = navController)
     }
 }

@@ -2,6 +2,7 @@ package com.example.boka.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +35,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,11 +45,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.boka.R
-import com.example.boka.graph.Graph
+import com.example.boka.core.NormalScreen
+import com.example.boka.navigation.Graph
 import com.example.boka.ui.theme.AppColor
 
 @Composable
 fun ProfileScreen(navController: NavHostController) {
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+
     Box {
         Image(
             modifier = Modifier
@@ -152,7 +160,15 @@ fun ProfileScreen(navController: NavHostController) {
                             fontSize = 17.sp,
                             fontWeight = FontWeight(600),
                             color = Color(0xFFB91D73),
-                        )
+                        ),
+                        modifier = Modifier.clickable {
+                            navController.popBackStack()
+//                            navController.navigate(Graph.AUTHENTICATION)
+                            navController.navigate(NormalScreen.Login.route)
+//                            coroutineScope.launch {
+//                                clearToken(context)
+//                            }
+                        }
                     )
                 }
             }
