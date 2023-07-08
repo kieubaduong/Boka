@@ -2,7 +2,6 @@ package com.example.boka.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,14 +44,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.boka.R
+import com.example.boka.core.GlobalData
 import com.example.boka.core.NormalScreen
-import com.example.boka.navigation.Graph
+import com.example.boka.core.clearToken
 import com.example.boka.ui.theme.AppColor
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(navController: NavHostController) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val user = GlobalData.currentUser
 
 
     Box {
@@ -98,7 +100,7 @@ fun ProfileScreen(navController: NavHostController) {
                         .clip(CircleShape)
                 ) {
                     AsyncImage(
-                        model = "https://link.gdsc.app/HDC5fcd",
+                        model = "https://link.gdsc.app/xTV9Pia",
                         contentDescription = "Avatar",
                         placeholder = painterResource(R.drawable.book),
                         modifier = Modifier
@@ -106,14 +108,13 @@ fun ProfileScreen(navController: NavHostController) {
                         contentScale = ContentScale.Crop,
                     )
                 }
-                Box(modifier = Modifier.height(35.dp))
                 ProfileItem(
                     title = "Fullname",
-                    subtitle = "Kiều Bá Dương",
+                    subtitle = user.name ?: "Dương Đẹp Trai",
                 )
                 ProfileItem(
                     title = "Email",
-                    subtitle = "kieubaduong24@gmail.com",
+                    subtitle = user.email ?: "kieubaduong@gmail.com",
                 )
                 ProfileItem(
                     title = "Bird date",
@@ -130,7 +131,12 @@ fun ProfileScreen(navController: NavHostController) {
                 )
                 Button(
                     onClick = {
-                        navController.navigate(Graph.ROOT   )
+//                        navController.navigate(Graph.ROOT)
+                        navController.popBackStack()
+                        navController.navigate(NormalScreen.Login.route)
+                        coroutineScope.launch {
+                            clearToken(context)
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -161,14 +167,6 @@ fun ProfileScreen(navController: NavHostController) {
                             fontWeight = FontWeight(600),
                             color = Color(0xFFB91D73),
                         ),
-                        modifier = Modifier.clickable {
-                            navController.popBackStack()
-//                            navController.navigate(Graph.AUTHENTICATION)
-                            navController.navigate(NormalScreen.Login.route)
-//                            coroutineScope.launch {
-//                                clearToken(context)
-//                            }
-                        }
                     )
                 }
             }

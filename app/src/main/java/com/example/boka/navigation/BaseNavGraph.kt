@@ -11,14 +11,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.boka.core.BottomBarScreen
 import com.example.boka.core.GlobalData
+import com.example.boka.core.NormalScreen
 import com.example.boka.core.PreferencesKeys
 import com.example.boka.core.dataStore
 import com.example.boka.data.model.User
 import com.example.boka.data.network.api.ApiService
 import com.example.boka.data.network.auth.AuthService
 import com.example.boka.data.repository.AuthRepo
+import com.example.boka.ui.favourite_genres.FavouriteGenreScreen
 import com.example.boka.ui.ProfileScreen
 import com.example.boka.ui.SavedBookScreen
+import com.example.boka.ui.auth.SignInScreen
 import com.example.boka.ui.history.HistoryScreen
 import com.example.boka.ui.home.HomeScreen
 import kotlinx.coroutines.flow.first
@@ -44,10 +47,12 @@ fun BaseNavGraph(navController: NavHostController){
 
     val isLoggedIn = GlobalData.isLoggedIn.value
 
+
+
     NavHost(
         navController = navController,
         route= Graph.BASE,
-        startDestination = if (!isLoggedIn) Graph.AUTHENTICATION else BottomBarScreen.Home.route
+        startDestination = if (!isLoggedIn) NormalScreen.Login.route else if(user.value?.favoriteGenres?.isEmpty() == true) NormalScreen.FavouriteGenre.route else BottomBarScreen.Home.route
     ){
         composable(BottomBarScreen.Home.route) { HomeScreen(navController) }
         composable(BottomBarScreen.SavedBook.route) { SavedBookScreen(navController) }
@@ -55,6 +60,11 @@ fun BaseNavGraph(navController: NavHostController){
         composable(BottomBarScreen.History.route) { HistoryScreen(navController) }
         detailNavGraph(navController)
         searchNavGraph(navController)
-        authNavGraph(navController)
+        composable(NormalScreen.Login.route){
+            SignInScreen(navController)
+        }
+        composable(NormalScreen.FavouriteGenre.route){
+            FavouriteGenreScreen(navController)
+        }
     }
 }
