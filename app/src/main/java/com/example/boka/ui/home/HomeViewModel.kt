@@ -1,5 +1,6 @@
 package com.example.boka.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chaquo.python.Python
@@ -21,10 +22,13 @@ class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: His
     private val _userBasedBooks = MutableStateFlow<ApiResult<List<Book>>>(ApiResult.Loading)
     val userBasedBooks: StateFlow<ApiResult<List<Book>>> get() = _userBasedBooks
     private var userRating : String? = null
+    private val _recentlyViewedBooks = MutableStateFlow<ApiResult<List<Book>>>(ApiResult.Loading)
+    val recentlyViewedBooks: StateFlow<ApiResult<List<Book>>> get() = _recentlyViewedBooks
 
     init {
         getTopRatedBooks()
         getUserBasedBooks()
+        getRecentlyViewedBooks()
     }
 
     private suspend fun getUserRating(){
@@ -34,6 +38,7 @@ class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: His
                 if(res.data != null){
                     userRating = Gson().toJson(res.data)
                     userRating = userRating.toString().replace("\"", "\\\"")
+                    Log.d("alo alo", userRating.toString())
                 }
                 else{
                     userRating = null
@@ -52,7 +57,12 @@ class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: His
             val module = py.getModule("user_based_model")
             var isbns: String? = null
 
-            userRating?.let {
+            if(userRating == null || userRating == "{}"){
+                _userBasedBooks.value = ApiResult.Error(Exception("ViewModel layer: ${"No user rating"}"))
+                return@launch
+            }
+
+            userRating.let {
                 ratings ->
                 val isbnOfUserBasedBooks = module["main"]?.call("\"$ratings\"")
                 var data = isbnOfUserBasedBooks.toString()
@@ -90,6 +100,21 @@ class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: His
                 }
             } catch (e: Exception) {
                 _topRatedBooks.value = ApiResult.Error(Exception("ViewModel layer: ${e.message}"))
+            }
+        }
+    }
+    private fun getRecentlyViewedBooks() {
+        viewModelScope.launch {
+            try{
+                val res = bookRepo.getRecentlyViewedBooks()
+                if(res.data != null){
+                    _recentlyViewedBooks.value = ApiResult.Success(res.data)
+                }
+                else{
+                    _recentlyViewedBooks.value = ApiResult.Error(Exception(res.error))
+                }
+            } catch (e: Exception) {
+                _recentlyViewedBooks.value = ApiResult.Error(Exception("ViewModel layer: ${e.message}"))
             }
         }
     }

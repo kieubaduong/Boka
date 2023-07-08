@@ -76,6 +76,7 @@ fun HomeScreen(navController: NavHostController) {
 
     val topRatedBooks by homeViewModel.topRatedBooks.collectAsState()
     val userBasedBooks by homeViewModel.userBasedBooks.collectAsState()
+    val recentlyViewedBooks by homeViewModel.recentlyViewedBooks.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -254,17 +255,53 @@ fun HomeScreen(navController: NavHostController) {
                 style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
             )
 
-            LazyRow(
-                modifier = Modifier.padding(16.dp, top = 0.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(recommendedBookEntities) { book ->
-                    Box(
-                        modifier = Modifier.clickable {
-                            navController.navigate("${NormalScreen.BookDetail.route}/${book.id}&${book.isbn}")
+            when (recentlyViewedBooks) {
+                is ApiResult.Success -> {
+                    val books = (recentlyViewedBooks as ApiResult.Success<List<Book>>).data
+                    if (books.isEmpty()) {
+                        Text(
+                            text = "No recently viewed books",
+                            modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                            style = TextStyle(color = Color.Red),
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    } else {
+                        LazyRow(
+                            modifier = Modifier.padding(16.dp, top = 0.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(books) { book ->
+                                Box(
+                                    modifier = Modifier.clickable {
+                                        navController.navigate("${NormalScreen.BookDetail.route}/${book.id}&${book.isbn}")
+                                    }
+                                ) {
+                                    BookItem(book)
+                                }
+                            }
                         }
+                    }
+                }
+
+                is ApiResult.Error -> {
+                    Text(
+                        text = (recentlyViewedBooks as ApiResult.Error).exception.message
+                            ?: "Error",
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                        style = TextStyle(color = Color.Red),
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+
+                is ApiResult.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(vertical = 8.dp)
                     ) {
-                        BookItem(book)
+                        CircularProgressIndicator()
                     }
                 }
             }
