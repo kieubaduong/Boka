@@ -27,7 +27,7 @@ data class BookJson(
     val ratingCount : Int,
     @SerializedName("user_rating")
     val userRating : Int?,
-    val genres : List<Genre>,
+    val genres : List<Genre> = emptyList(),
 ){
     fun toBook(): Book {
         val category = genres.joinToString { it.name }
