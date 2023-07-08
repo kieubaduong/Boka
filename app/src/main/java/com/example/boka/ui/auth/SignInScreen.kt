@@ -47,7 +47,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.boka.core.BottomBarScreen
+import com.example.boka.core.NormalScreen
 import com.example.boka.core.dataStore
+import com.example.boka.data.model.User
 import com.example.boka.data.network.api.ApiService
 import com.example.boka.data.network.auth.AuthService
 import com.example.boka.data.repository.AuthRepo
@@ -212,9 +214,17 @@ fun SignInScreen(navController: NavHostController) {
                     is ApiResult.Success -> {
                         LaunchedEffect(Unit) {
                             navController.popBackStack()
-                            navController.navigate(BottomBarScreen.Home.route)
+                            val user = (signInResult as ApiResult.Success<User>).data
+                            if (user.favoriteGenres.isEmpty()) {
+                                navController.navigate(NormalScreen.FavouriteGenre.route)
+                                return@LaunchedEffect
+                            } else {
+                                navController.navigate(BottomBarScreen.Home.route)
+
+                            }
                         }
                     }
+
                     is ApiResult.Error -> {
                         val exception = (signInResult as ApiResult.Error).exception
                         Text(
@@ -228,6 +238,7 @@ fun SignInScreen(navController: NavHostController) {
                             fontWeight = FontWeight.Bold,
                         )
                     }
+
                     else -> {}
                 }
             }
@@ -235,23 +246,34 @@ fun SignInScreen(navController: NavHostController) {
                 when (signInResult) {
                     is ApiResult.Loading -> {
                         Box(
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier
+                                .align(Alignment.Center)
                                 .background(Color.Gray.copy(alpha = 0.2f))
                                 .fillMaxSize(),
                         ) {
                             CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center)
+                                modifier = Modifier
+                                    .align(Alignment.Center)
                                     .size(60.dp),
                                 color = AppColor.purple
                             )
                         }
                     }
+
                     is ApiResult.Success -> {
                         LaunchedEffect(Unit) {
                             navController.popBackStack()
-                            navController.navigate(BottomBarScreen.Home.route)
+                            val user = (signInResult as ApiResult.Success<User>).data
+                            if (user.favoriteGenres.isEmpty()) {
+                                navController.navigate(NormalScreen.FavouriteGenre.route)
+                                return@LaunchedEffect
+                            } else {
+                                navController.navigate(BottomBarScreen.Home.route)
+
+                            }
                         }
                     }
+
                     else -> {}
                 }
             }
