@@ -10,7 +10,6 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface AuthApi {
-
     @GET("auth")
     suspend fun getAuth() : Response<BodyResult<UserJson>>
     @POST("auth/sign_in")

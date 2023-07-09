@@ -41,6 +41,13 @@ object ApiService {
         retrofit!!.create(MasterApi::class.java)
     }
 
+    val userApi : UserApi by lazy {
+        if (retrofit == null) {
+            buildRetrofit()
+        }
+        retrofit!!.create(UserApi::class.java)
+    }
+
     private val tokenInterceptor = Interceptor { chain ->
         val originalRequest = chain.request()
         val newRequest = originalRequest.newBuilder()

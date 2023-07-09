@@ -1,5 +1,6 @@
 package com.example.boka.data.network.auth.result
 
+import com.example.boka.data.model.Genre
 import com.example.boka.data.model.User
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
@@ -14,7 +15,7 @@ data class UserJson(
     @SerializedName("updated_at")
     val updatedAt: String,
     @SerializedName("favorite_genres")
-    val favoriteGenres : List<String> = emptyList(),
+    val favoriteGenres : List<Genre> = emptyList(),
 ){
     fun toUser() : User {
         val formatter = DateTimeFormatter.ISO_DATE_TIME
@@ -23,7 +24,7 @@ data class UserJson(
             name = name,
             createdAt = LocalDateTime.parse(createdAt, formatter),
             updatedAt = LocalDateTime.parse(updatedAt, formatter),
-            favoriteGenres = favoriteGenres,
+            favoriteGenres = favoriteGenres.map { it.name },
         )
     }
 }

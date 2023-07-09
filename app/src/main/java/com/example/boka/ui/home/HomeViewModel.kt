@@ -37,7 +37,6 @@ class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: His
                 if(res.data != null){
                     userRating = Gson().toJson(res.data)
                     userRating = userRating.toString().replace("\"", "\\\"")
-                    Log.d("alo alo", userRating.toString())
                 }
                 else{
                     userRating = null

@@ -47,14 +47,12 @@ fun BaseNavGraph(navController: NavHostController){
 
     val isLoggedIn = GlobalData.isLoggedIn.value
 
-
-
     NavHost(
         navController = navController,
         route= Graph.BASE,
-        startDestination = if (!isLoggedIn) NormalScreen.Login.route else if(user.value?.favoriteGenres?.isEmpty() == true) NormalScreen.FavouriteGenre.route else BottomBarScreen.Home().route
+        startDestination = if (!isLoggedIn) NormalScreen.Login.route else if(user.value?.favoriteGenres?.isEmpty() == true) NormalScreen.FavouriteGenre.route else BottomBarScreen.Home.route
     ){
-        composable(BottomBarScreen.Home().route) { HomeScreen(navController) }
+        composable(BottomBarScreen.Home.route) { HomeScreen(navController) }
         composable(BottomBarScreen.SavedBook.route) { SavedBookScreen(navController) }
         composable(BottomBarScreen.Profile.route) { ProfileScreen(navController) }
         composable(BottomBarScreen.History.route) { HistoryScreen(navController) }
