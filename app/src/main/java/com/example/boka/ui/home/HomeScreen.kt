@@ -131,32 +131,35 @@ fun HomeScreen(navController: NavHostController) {
                         )
                     }
                 )
-
             }
         }
 
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .weight(weight = 1f, fill = false)
+                .weight(weight = 1f, fill = false),
         )
         {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Popular",
-                    style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                )
-                Icon(
-                    modifier = Modifier.clickable { /* Handle arrow icon click */ },
-                    imageVector = Icons.Default.ArrowForwardIos,
-                    contentDescription = "Arrow Icon"
-                )
+            topRatedBooks.let { result ->
+                if ((result is ApiResult.Success<List<Book>> && result.data.isNotEmpty())) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Popular",
+                            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        )
+                        Icon(
+                            modifier = Modifier.clickable { /* Handle arrow icon click */ },
+                            imageVector = Icons.Default.ArrowForwardIos,
+                            contentDescription = "Arrow Icon"
+                        )
+                    }
+                }
             }
 
             when (topRatedBooks) {
@@ -179,33 +182,44 @@ fun HomeScreen(navController: NavHostController) {
                 }
 
                 is ApiResult.Error -> {
-                    Text(
-                        text = (topRatedBooks as ApiResult.Error).exception.message
-                            ?: "Error",
+                    Box(
                         modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-                        style = TextStyle(color = Color.Red),
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                            .height(100.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = (topRatedBooks as ApiResult.Error).exception.message
+                                ?: "Error",
+                            style = TextStyle(color = Color.Red),
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
 
                 is ApiResult.Loading -> {
                     Box(
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(vertical = 8.dp)
+                            .height(200.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator()
                     }
                 }
             }
 
-            Text(
-                modifier = Modifier
-                    .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
-                text = "Recommended for you",
-                style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            )
+            userBasedBooks.let { result ->
+                if ((result is ApiResult.Success<List<Book>> && result.data.isNotEmpty())) {
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
+                        text = "Recommended for you",
+                        style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    )
+                }
+            }
+
 
             when (userBasedBooks) {
                 is ApiResult.Success -> {
@@ -227,33 +241,44 @@ fun HomeScreen(navController: NavHostController) {
                 }
 
                 is ApiResult.Error -> {
-                    Text(
-                        text = (userBasedBooks as ApiResult.Error).exception.message
-                            ?: "Error",
+                    Box(
                         modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-                        style = TextStyle(color = Color.Red),
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                            .height(100.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = (userBasedBooks as ApiResult.Error).exception.message
+                                ?: "Error",
+                            style = TextStyle(color = Color.Red),
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
 
                 is ApiResult.Loading -> {
                     Box(
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(vertical = 8.dp)
+                            .height(200.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator()
                     }
                 }
             }
 
-            Text(
-                modifier = Modifier
-                    .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
-                text = "Recently viewed",
-                style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            )
+            recentlyViewedBooks.let { result ->
+                if ((result is ApiResult.Success<List<Book>>) && result.data.isNotEmpty()) {
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
+                        text = "Recently viewed",
+                        style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    )
+                }
+            }
+
 
             when (recentlyViewedBooks) {
                 is ApiResult.Success -> {
@@ -285,21 +310,27 @@ fun HomeScreen(navController: NavHostController) {
                 }
 
                 is ApiResult.Error -> {
-                    Text(
-                        text = (recentlyViewedBooks as ApiResult.Error).exception.message
-                            ?: "Error",
+                    Box(
                         modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-                        style = TextStyle(color = Color.Red),
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                            .height(100.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    )  {
+                        Text(
+                            text = (recentlyViewedBooks as ApiResult.Error).exception.message
+                                ?: "Error",
+                            style = TextStyle(color = Color.Red),
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
 
                 is ApiResult.Loading -> {
                     Box(
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(vertical = 8.dp)
+                            .height(200.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator()
                     }

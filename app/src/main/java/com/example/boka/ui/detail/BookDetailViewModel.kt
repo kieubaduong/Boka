@@ -2,7 +2,6 @@ package com.example.boka.ui.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chaquo.python.Python
 import com.example.boka.data.model.Book
 import com.example.boka.data.repository.BookRepo
 import com.example.boka.util.ApiResult
@@ -22,7 +21,7 @@ class BookDetailViewModel(private val bookRepo: BookRepo, bookId: Int, isbn: Str
     init {
         getBookDetail(bookId)
         getContentBasedBook(bookId)
-        getItemBasedBook(isbn)
+        getItemBasedBook(bookId)
     }
 
     fun getBookDetail(bookId: Int) {
@@ -61,27 +60,21 @@ class BookDetailViewModel(private val bookRepo: BookRepo, bookId: Int, isbn: Str
             }
         }
     }
-    private fun getItemBasedBook(isbn: String) {
-        _itemBasedBooks.value = ApiResult.Loading
+    private fun getItemBasedBook(bookId: Int) {
         viewModelScope.launch {
-            val py = Python.getInstance()
-            val module = py.getModule("item_based_model")
-            val isbns: String?
-
-            val isbnOfItemBasedBooks = module["main"]?.call(isbn)
-            var data = isbnOfItemBasedBooks.toString()
-            data = data.replace("[", "").replace("]", "")
-            isbns = data.split(", ").map { it.replace("\'", "") }.joinToString(separator = ",") { it }
-
+            _itemBasedBooks.value = ApiResult.Loading
             try {
-                val res = bookRepo.getBooks(isbns)
-                if(res.data != null){
-                    _itemBasedBooks.value = ApiResult.Success(res.data)
-                } else{
-                    _itemBasedBooks.value = ApiResult.Error(Exception(res.error))
+                val response = bookRepo.getItemBasedBook(bookId)
+                val books = response.data
+                val success = response.error == null && books != null
+                if (success) {
+                    _itemBasedBooks.value = ApiResult.Success(books ?: listOf())
+                } else {
+                    val errorBody = response.error
+                    _itemBasedBooks.value = ApiResult.Error(Exception(errorBody))
                 }
             } catch (e: Exception) {
-                _itemBasedBooks.value = ApiResult.Error(Exception("ViewModel layer: ${e.message}"))
+                _itemBasedBooks.value = ApiResult.Error(e)
             }
         }
     }

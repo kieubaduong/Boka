@@ -24,7 +24,6 @@ class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: His
     private var userRating : String? = null
     private val _recentlyViewedBooks = MutableStateFlow<ApiResult<List<Book>>>(ApiResult.Loading)
     val recentlyViewedBooks: StateFlow<ApiResult<List<Book>>> get() = _recentlyViewedBooks
-
     init {
         getTopRatedBooks()
         getUserBasedBooks()
@@ -49,7 +48,6 @@ class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: His
             }
         }
     }
-
     private fun getUserBasedBooks(){
         viewModelScope.launch {
             withContext(Dispatchers.Default) { getUserRating() }
@@ -58,7 +56,7 @@ class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: His
             var isbns: String? = null
 
             if(userRating == null || userRating == "{}"){
-                _userBasedBooks.value = ApiResult.Error(Exception("ViewModel layer: ${"No user rating"}"))
+                _userBasedBooks.value = ApiResult.Success(emptyList())
                 return@launch
             }
 

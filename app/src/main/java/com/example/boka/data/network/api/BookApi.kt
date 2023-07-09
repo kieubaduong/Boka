@@ -19,9 +19,10 @@ interface BookApi {
     suspend fun getTopRatedBooks() : Response<BodyResult<List<BookJson>>>
     @GET("books/{bookId}/related")
     suspend fun getContentBasedBook(@Path("bookId") bookId : Int) : Response<BodyResult<List<BookJson>>>
+    @GET("books/{bookId}/item_based")
+    suspend fun getItemBasedBook(@Path("bookId") bookId : Int) : Response<BodyResult<List<BookJson>>>
     @GET("books/recently_viewed")
     suspend fun getRecentlyViewedBooks() : Response<BodyResult<List<BookJson>>>
-
     @POST("book_ratings")
     suspend fun rateBook(@Body reviewBookBody: ReviewBookBody) : Response<BodyResult<Any>>
 
