@@ -12,5 +12,5 @@ class BookService(private val bookApi : BookApi) : BaseService(){
     suspend fun getItemBasedBook(bookId: Int) = callApi { bookApi.getItemBasedBook(bookId) }
     suspend fun rateBook(reviewBookBody: ReviewBookBody) = callApi { bookApi.rateBook(reviewBookBody) }
     suspend fun getRecentlyViewedBooks() = callApi { bookApi.getRecentlyViewedBooks() }
-
+    suspend fun getNewUserBooks() = callApi { bookApi.getNewUserBooks() }
 }

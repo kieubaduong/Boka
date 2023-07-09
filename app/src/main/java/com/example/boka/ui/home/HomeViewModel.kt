@@ -1,6 +1,5 @@
 package com.example.boka.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chaquo.python.Python
@@ -55,7 +54,7 @@ class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: His
             var isbns: String? = null
 
             if(userRating == null || userRating == "{}"){
-                _userBasedBooks.value = ApiResult.Success(emptyList())
+                getNewUserBooks()
                 return@launch
             }
 
@@ -112,6 +111,21 @@ class HomeViewModel(private val bookRepo: BookRepo, private val historyRepo: His
                 }
             } catch (e: Exception) {
                 _recentlyViewedBooks.value = ApiResult.Error(Exception("ViewModel layer: ${e.message}"))
+            }
+        }
+    }
+    private fun getNewUserBooks() {
+        viewModelScope.launch {
+            try{
+                val res = bookRepo.getNewUserBooks()
+                if(res.data != null){
+                    _userBasedBooks.value = ApiResult.Success(res.data)
+                }
+                else{
+                    _userBasedBooks.value = ApiResult.Error(Exception(res.error))
+                }
+            } catch (e: Exception) {
+                _userBasedBooks.value = ApiResult.Error(Exception("ViewModel layer: ${e.message}"))
             }
         }
     }

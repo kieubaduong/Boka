@@ -33,6 +33,10 @@ class BookRepo(private val bookService: BookService) : BaseRepo() {
         val res: NetworkResult<BodyResult<List<BookJson>>> = bookService.getRecentlyViewedBooks()
         return handleNetworkResult(res) { it.data.map { bookJson -> bookJson.toBook() } }
     }
+    suspend fun getNewUserBooks(): NetworkResult<List<Book>> {
+        val res: NetworkResult<BodyResult<List<BookJson>>> = bookService.getNewUserBooks()
+        return handleNetworkResult(res) { it.data.map { bookJson -> bookJson.toBook() } }
+    }
     suspend fun rateBook(rating: Int, bookId: Int): NetworkResult<Any> {
         val res: NetworkResult<BodyResult<Any>> = bookService.rateBook(ReviewBookBody(rating, bookId))
         return handleNetworkResult(res) { it.data }
