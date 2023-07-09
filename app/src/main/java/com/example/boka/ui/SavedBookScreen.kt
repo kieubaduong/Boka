@@ -1,6 +1,5 @@
 package com.example.boka.ui
 
-import com.example.boka.core.NormalScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.boka.R
+import com.example.boka.core.NormalScreen
 import com.example.boka.data.model.Book
 import com.example.boka.ui.common.RatingBar
 import com.example.boka.ui.theme.AppColor
@@ -68,31 +70,27 @@ fun SavedBookScreen(navController: NavHostController) {
 
         Column(
             modifier = Modifier
+                .verticalScroll(rememberScrollState())
                 .padding(
                     start = 20.dp,
                     end = 20.dp,
                     top = 105.dp,
                 ),
-            verticalArrangement = Arrangement.spacedBy(36.dp)
+            verticalArrangement = Arrangement.spacedBy(36.dp),
+
         ) {
             bookEntities.forEach { book ->
-                book.title?.let {
-                    book.ratingAvg?.let { it1 ->
-                        book.category?.let { it2 ->
-                            Box (
-                                modifier = Modifier
-                                    .clickable {
-                                        navController.navigate(NormalScreen.BookDetail.route)
-                                    }
-                                    ){
-                                BookItem(
-                                    bookName = it,
-                                    rating = it1,
-                                    category = it2
-                                )
-                            }
+                Box (
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate(NormalScreen.BookDetail.route)
                         }
-                    }
+                ){
+                    BookItem(
+                        bookName = book.title,
+                        rating = book.ratingAvg,
+                        category = book.category
+                    )
                 }
             }
         }

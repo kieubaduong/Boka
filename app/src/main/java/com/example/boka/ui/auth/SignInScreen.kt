@@ -219,7 +219,7 @@ fun SignInScreen(navController: NavHostController) {
                                 navController.navigate(NormalScreen.FavouriteGenre.route)
                                 return@LaunchedEffect
                             } else {
-                                navController.navigate(BottomBarScreen.Home.route)
+                                navController.navigate(BottomBarScreen.Home().route)
 
                             }
                         }
@@ -268,7 +268,7 @@ fun SignInScreen(navController: NavHostController) {
                                 navController.navigate(NormalScreen.FavouriteGenre.route)
                                 return@LaunchedEffect
                             } else {
-                                navController.navigate(BottomBarScreen.Home.route)
+                                navController.navigate(BottomBarScreen.Home().route)
 
                             }
                         }

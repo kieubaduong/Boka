@@ -25,7 +25,7 @@ import com.example.boka.ui.theme.AppColor
 fun BaseScreen() {
     val navController = rememberNavController()
     val items = listOf(
-        BottomBarScreen.Home,
+        BottomBarScreen.Home(),
         BottomBarScreen.SavedBook,
         BottomBarScreen.History,
         BottomBarScreen.Profile,

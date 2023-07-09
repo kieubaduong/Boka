@@ -389,35 +389,3 @@ fun BookItem(book: Book) {
     }
 }
 
-val recommendedBookEntities = listOf(
-    Book(
-        title = "Book 6",
-        ratingAvg = 4.0,
-        category = "horror, zombies,...",
-        imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
-    ),
-    Book(
-        title = "Book 7",
-        ratingAvg = 4.0,
-        category = "horror, zombies,...",
-        imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
-    ),
-    Book(
-        title = "Book 8",
-        ratingAvg = 3.0,
-        category = "horror, zombies,...",
-        imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
-    ),
-    Book(
-        title = "Book 9",
-        ratingAvg = 3.0,
-        category = "horror, zombies,...",
-        imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
-    ),
-    Book(
-        title = "Book 10",
-        ratingAvg = 3.0,
-        category = "horror, zombies,...",
-        imageL = "https://www.hachette.co.uk/wp-content/uploads/2022/09/hbg-title-9781472276087-40.jpg"
-    ),
-)
