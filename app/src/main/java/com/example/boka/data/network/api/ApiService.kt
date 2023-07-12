@@ -7,7 +7,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiService {
     private const val BASE_URL = "https://rseeshop-api.onrender.com/api/"
-    private var newToken : Boolean = false
     var token : String = "Init token"
         set(value)  {
             field = value
