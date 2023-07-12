@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class BookDetailViewModel(private val bookRepo: BookRepo, bookId: Int, isbn: String) : ViewModel() {
+class BookDetailViewModel(private val bookRepo: BookRepo, bookId: Int) : ViewModel() {
     private val _getBookDetailResult = MutableStateFlow<ApiResult<Book>>(ApiResult.Loading)
     val getBookDetailResult: StateFlow<ApiResult<Book>> get() = _getBookDetailResult
 

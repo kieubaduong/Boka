@@ -57,7 +57,7 @@ import com.example.boka.util.ApiResult
 fun BookDetailScreen(navController: NavHostController, bookId: Int?, isbn: String) {
     val bookService = BookService(ApiService.bookApi)
     val bookRepo = BookRepo(bookService)
-    val bookDetailViewModel = remember { BookDetailViewModel(bookRepo, bookId ?: 0, isbn) }
+    val bookDetailViewModel = remember { BookDetailViewModel(bookRepo, bookId ?: 0) }
 
     val getBookDetailResult by bookDetailViewModel.getBookDetailResult.collectAsState()
     val contentBasedBooks by bookDetailViewModel.contentBasedBooks.collectAsState()
