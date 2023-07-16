@@ -19,6 +19,7 @@ This is an Android application built using Jetpack Compose and follows the princ
 
 ## Project Structure
 
+```
 ├── core
 ├── data
 │   ├── model
@@ -35,6 +36,7 @@ This is an Android application built using Jetpack Compose and follows the princ
 │   ├── common
 │   └── theme
 └── util
+```
 
 The project follows the Clean Architecture principles, which separates the codebase into layers:
 
