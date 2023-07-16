@@ -32,7 +32,7 @@ This is an Android application built using Jetpack Compose and follows the princ
 ├── navigation
 ├── ui
 │   ├── MainActivity.kt
-│   ├── auth
+│   ├── features
 │   ├── common
 │   └── theme
 └── util
