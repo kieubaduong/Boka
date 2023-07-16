@@ -21,7 +21,6 @@ Welcome to the Book Recommendation App! This is an Android application built usi
 
 ## Project Structure
 
-BookReadingApp.kt
 ├── core
 ├── data
 │   ├── model
