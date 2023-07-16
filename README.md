@@ -1,7 +1,5 @@
 # Book Recommendation App
 
-![App Screenshot](app-screenshot.png)
-
 Welcome to the Book Recommendation App! This is an Android application built using Jetpack Compose and follows the principles of Clean Architecture. The app provides a user-friendly interface for browsing and discovering books, as well as personalized book recommendations based on user preferences.
 
 ## Features
@@ -60,13 +58,32 @@ The project follows the Clean Architecture principles, which separates the codeb
 |               Profile                         
 |   ![](.github/screenshots/profile.jpg)     
 
-## Getting Started
+## Prerequisites
 
-### Prerequisites
-
-- Android Studio Arctic Fox (2020.3.1) or higher
-- Kotlin 1.5.21 or higher
+- Android Studio Hedgehog Canary 1 (2023.1.1.1) or higher
+- Kotlin 1.8.10 or higher
+- Android minSdk 30
+- Python 3.8
 
 ### Todo
 
 - Dependency injection
+
+## Contributors✨
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/kieubaduong">
+        <img src="https://avatars.githubusercontent.com/u/75083331?v=4" width="100px;" alt=""/>
+        <br />
+        <sub><b>Kieu Ba Duong</b></sub>
+      </a>
+      <br />
+      <sub>Mobile developer</sub>
+      <br />
+      <sub>ML researcher</sub>
+    </td>
+  </tr>
+</table>
+
