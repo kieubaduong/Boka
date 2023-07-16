@@ -1,6 +1,6 @@
 # Book Recommendation App
 
-Welcome to the Book Recommendation App! This is an Android application built using Jetpack Compose and follows the principles of Clean Architecture. The app provides a user-friendly interface for browsing and discovering books, as well as personalized book recommendations based on user preferences.
+This is an Android application built using Jetpack Compose and follows the principles of Clean Architecture. The app provides a user-friendly interface for browsing and discovering books, as well as personalized book recommendations based on user preferences.
 
 ## Features
 
