@@ -69,7 +69,7 @@ The project follows the Clean Architecture principles, which separates the codeb
 
 ### Todo
 
-- Dependency injection
+- Dependency injection with Dagger & Hilt
 
 ## Contributors✨
 
