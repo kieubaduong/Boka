@@ -48,6 +48,7 @@ The project follows the Clean Architecture principles, which separates the codeb
 - `ui`: Implements the presentation layer, including view models and UI screens.
 - `navigation`: Implements the navigation graph.
 - `util`: Contains helper method and extensions.
+- `features`: Contains main screen and viewmodel.
 
 ## Screenshots
 
